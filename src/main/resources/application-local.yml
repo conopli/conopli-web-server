@@ -1,0 +1,29 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: ${MAIN_DB_URL}
+    username: ${MAIN_DB_ID}
+    password: ${MAIN_DB_PW}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    #    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+logging.level:
+  org.hibernate.SQL: debug
+  com:
+    amazonaws:
+      util:
+        EC2MetadataUtils: error
+  org:
+    hibernate:
+      type:
+        descriptor:
+          sql:
+            org.hibernate.type.descriptor.sql.BasicBinder: trace
+    springframework:
+      web.servlet: debug

@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+src/main/resources/env.yml
+
+src/main/resources/static/docs/**
+
+/src/main/generated
