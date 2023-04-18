@@ -1,0 +1,107 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.5'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
+}
+
+group = 'conopli'
+version = '0.0.1'
+sourceCompatibility = '17'
+
+configurations {
+	//rest docs
+	asciidoctorExtensions
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// https://mvnrepository.com/artifact/org.springframework.restdocs/spring-restdocs-mockmvc
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	// MySQl
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// == 스프링 부트 3.0 이상 ==
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+}
+
+test {
+	// 위에서 작성한 snippetsDir 디렉토리를 test의 output으로 구성하는 설정 -> 스니펫 조각들이 build/generated-snippets로 출력
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+asciidoctor { // asciidoctor 작업 구성
+	dependsOn test // test 작업 이후에 작동하도록 하는 설정
+	configurations 'asciidoctorExtensions' // 위에서 작성한 configuration 적용
+	inputs.dir snippetsDir // snippetsDir 를 입력으로 구성
+
+	// source가 없으면 .adoc파일을 전부 html로 만들어버림
+	// source 지정시 특정 adoc만 HTML로 만든다.
+	sources{
+		include("**/index.adoc","**/common/*.adoc")
+	}
+
+	baseDirFollowsSourceFile()
+}
+
+// static/docs 폴더 비우기
+asciidoctor.doFirst {
+	delete file('src/main/resources/templates/docs')
+}
+
+// asccidoctor 작업 이후 생성된 HTML 파일을 static/docs 로 copy
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/templates/docs")
+}
+
+// build 의 의존작업 명시
+build {
+	dependsOn copyDocument
+}
+
+// Querydsl 설정
+def generated='src/main/generated'
+
+// querydsl QClass 파일 생성 위치를 지정
+tasks.withType(JavaCompile) {
+	options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+
+// java source set 에 querydsl QClass 위치 추가
+sourceSets {
+	main.java.srcDirs += [ generated ]
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+clean {
+	delete file(generated)
+}
+
+jar {
+	enabled = false
+}
+
