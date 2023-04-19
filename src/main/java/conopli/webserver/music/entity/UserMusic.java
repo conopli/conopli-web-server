@@ -22,24 +22,24 @@ public class UserMusic extends Auditable {
     private Long musicId;
 
     @Column(nullable = false, unique = true)
-    String num;
+    private String num;
 
     @Column(nullable = false)
-    String title;
+    private String title;
 
     @Column(nullable = false)
-    String singer;
+    private String singer;
 
     @Column(nullable = false)
-    String lyricist;
+    private String lyricist;
 
     @Column(nullable = false)
-    String composer;
+    private String composer;
 
     @Column(nullable = false)
-    String youtubeUrl;
+    private String youtubeUrl;
 
     @Column(nullable = false)
-    String nation;
+    private String nation;
 
 }
