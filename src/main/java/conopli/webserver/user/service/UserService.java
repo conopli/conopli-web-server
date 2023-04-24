@@ -14,7 +14,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserDto createUser(String email, String nickName, String loginType) {
+    public UserDto createUser(
+            String email,
+            String nickName,
+            String loginType
+    ) {
 
         return null;
     }

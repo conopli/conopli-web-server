@@ -27,7 +27,7 @@ class HttpClientServiceTest {
                 .page(1)
                 .build();
         //When
-        HttpClientPageDto httpClientPageDto = service.generateModelPostRequest(dto);
+        HttpClientPageDto httpClientPageDto = service.generateMusicRequest(dto);
         System.out.println(httpClientPageDto.getData());
 
         //Then

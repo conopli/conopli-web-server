@@ -11,4 +11,6 @@ public class LoginDto {
 
     String oauthAccessToken;
 
+    String loginType;
+
 }
