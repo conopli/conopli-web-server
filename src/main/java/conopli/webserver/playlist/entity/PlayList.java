@@ -20,6 +20,9 @@ public class PlayList {
     private String title;
 
     @Column(nullable = false)
-    private Integer color;
+    private String color;
+
+    @Column(nullable = false)
+    private String emoji;
 
 }
