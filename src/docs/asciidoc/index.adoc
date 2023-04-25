@@ -1,0 +1,26 @@
+= Greneta 3D Model Generator API REST Docs
+Greneta Generator
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[BlenderController-API]]
+== Generator Server API
+
+
+[[Blender-POST-API]]
+=== Generate POST API
+operation::BlenderPostAPI[snippets='http-request,request-fields,request-body,http-response,response-fields']
+
+
+[[Blender-GET-API]]
+=== Model Download GET API
+operation::DownloadGetAPI[snippets='http-request,path-parameters,request-body,http-response,response-body']
+
+
+[[Blender-DELETE-API]]
+=== Model DELETE API
+operation::BlenderDeleteAPI[snippets='http-request,path-parameters,request-body,http-response,response-body']
