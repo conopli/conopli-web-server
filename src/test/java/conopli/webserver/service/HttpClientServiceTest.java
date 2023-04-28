@@ -15,23 +15,5 @@ class HttpClientServiceTest {
     @Autowired
     HttpClientService service;
 
-    @Test
-    @DisplayName("")
-    void test() {
-        //Given
-        SearchDto dto = SearchDto
-                .builder()
-                .searchType(1)
-                .searchNation("KOR")
-                .searchKeyWord("아리랑")
-                .page(1)
-                .build();
-        //When
-        HttpClientPageDto httpClientPageDto = service.generateMusicRequest(dto);
-        System.out.println(httpClientPageDto.getData());
-
-        //Then
-    }
-
 
 }
