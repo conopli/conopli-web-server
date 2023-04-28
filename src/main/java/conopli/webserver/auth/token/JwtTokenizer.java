@@ -77,12 +77,19 @@ public class JwtTokenizer {
 
     /* user 매개변수를 받아 jwt 토큰을 생성 */
     public void delegateToken(
-            User user,
+            String email,
             HttpServletResponse response
     ) {
-        String subject = user.getEmail();
         String base64SecretKey = encodeBase64SecretKey(getSecretKey());
-        setHeader(base64SecretKey, response, subject);
+        setHeader(base64SecretKey, response, email);
+    }
+
+    public Token getDelegateToken(
+            String email,
+            HttpServletResponse response
+    ) {
+        String base64SecretKey = encodeBase64SecretKey(getSecretKey());
+        return setHeader(base64SecretKey, response, email);
     }
 
     /* RefreshToken 을 검증하여 토큰을 재 발급 */
@@ -95,7 +102,7 @@ public class JwtTokenizer {
         setHeader(base64SecretKey,response, subject);
     }
 
-    private void setHeader(
+    private Token setHeader(
             String base64SecretKey,
             HttpServletResponse response,
             String subject
@@ -108,6 +115,7 @@ public class JwtTokenizer {
         String newRefreshToken = token.getRefreshToken();
         refreshService.createRefresh(subject, newRefreshToken);
         response.setHeader("Authorization", "Bearer " + newAccessToken);
+        return token;
     }
 
 
