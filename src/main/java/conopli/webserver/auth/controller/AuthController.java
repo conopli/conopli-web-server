@@ -2,8 +2,8 @@ package conopli.webserver.auth.controller;
 
 import conopli.webserver.auth.dto.AuthSuccessTokenResponseDto;
 import conopli.webserver.auth.dto.LoginDto;
+import conopli.webserver.auth.service.AuthService;
 import conopli.webserver.auth.token.JwtTokenizer;
-import conopli.webserver.auth.token.Token;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,17 +28,18 @@ import java.io.IOException;
 @Slf4j
 public class AuthController {
 
-    private final JwtTokenizer jwtTokenizer;
+    private final AuthService authService;
 
-    private final UserService userService;
+    private final JwtTokenizer jwtTokenizer;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @ModelAttribute LoginDto loginDto,
             HttpServletResponse response
     ) {
-        System.out.println(loginDto.getOauthAccessToken());
-//        jwtTokenizer.delegateToken(new User(),response);
+        response.setHeader("Authorization", "AccessToken");
+        response.setHeader("userId", "1");
+        response.setHeader("userStatus", "VERIFIED");
         return ResponseEntity.ok().build();
     }
 
@@ -46,10 +47,7 @@ public class AuthController {
     public ResponseEntity<?> verifyUser(
             HttpServletRequest request
     ) throws IOException {
-        String authorization = request.getHeader("Authorization");
-        String accessToken = authorization.replace("Bearer ", "");
-        jwtTokenizer.verifyAccessToken(accessToken);
-        log.info("# Verify Login User");
+        authService.verifyUser(request.getHeader("Authorization"));
         return ResponseEntity.ok().build();
     }
 
@@ -58,12 +56,11 @@ public class AuthController {
             HttpServletResponse response,
             @PathVariable @Positive Long userId
     ) throws IOException {
-        User user = userService.verifiedUserById(userId);
-        jwtTokenizer.verifyRefreshToken(user.getEmail(), response);
-        response.setHeader("userStatus", user.getUserStatus().name());
-        response.setHeader("userId", user.getUserId().toString());
-        log.info("# Reissue Token");
-        return new ResponseEntity<>(AuthSuccessTokenResponseDto.of(response), HttpStatus.OK);
+        authService.reIssueToken(response, userId);
+        return new ResponseEntity<>(
+                AuthSuccessTokenResponseDto.of(response),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/logout")
@@ -71,12 +68,7 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            new SecurityContextLogoutHandler().logout(request, response, authentication);
-        }
-        jwtTokenizer.deleteRefresh(request.getHeader("Authorization"));
-        log.info("# User Logout");
+        authService.logout(request,response);
         return ResponseEntity.ok().build();
     }
 
