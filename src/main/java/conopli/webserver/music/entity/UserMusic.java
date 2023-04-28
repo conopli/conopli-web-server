@@ -42,4 +42,7 @@ public class UserMusic extends Auditable {
     @Column(nullable = false)
     private String nation;
 
+    @Column(nullable = false)
+    private String orderNum;
+
 }
