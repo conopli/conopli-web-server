@@ -10,16 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class PopularDto {
+public class PopularResponseDto {
 
-    // 1 = 가요 2 = POP 3 = J-POP
-    String searchType;
+    public String ranking;
 
-    String syy;
-    String smm;
+    public String num;
 
-    String eyy;
-    String emm;
+    public String title;
 
+    public String singer;
 
 }
