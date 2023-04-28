@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class SearchMusicResponseDto {
-    String num;
-    String title;
-    String singer;
-    String lyricist;
-    String composer;
-    String youtubeUrl;
-    String nation;
+    private String musicId;
+    private String num;
+    private String title;
+    private String singer;
+    private String lyricist;
+    private String composer;
+    private String youtubeUrl;
+    private String nation;
 }
