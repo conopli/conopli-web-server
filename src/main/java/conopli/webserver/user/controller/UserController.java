@@ -1,7 +1,10 @@
 package conopli.webserver.user.controller;
 
 
+import conopli.webserver.dto.ResponseDto;
 import conopli.webserver.search.dto.SearchDto;
+import conopli.webserver.user.dto.UserDto;
+import conopli.webserver.utils.StubUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -16,16 +19,19 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     @GetMapping("/{userId}")
-    public ResponseEntity<?> searchUser() {
+    public ResponseEntity<?> searchUser(
+            @PathVariable String userId
+    ) {
         // Todo : 회원 정보 검색
-
-        return ResponseEntity.ok().build();
+        UserDto userDto = StubUtils.createUserDto();
+        return ResponseEntity.ok(ResponseDto.of(userDto));
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUser() {
+    public ResponseEntity<?> deleteUser(
+            @PathVariable String userId
+    ) {
         // Todo : 회원 탈퇴
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
