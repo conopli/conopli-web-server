@@ -1,6 +1,9 @@
 package conopli.webserver.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import conopli.webserver.auth.dto.LoginDto;
 import conopli.webserver.constant.ErrorCode;
 import conopli.webserver.dto.HttpClientKakaoMapDto;
 import conopli.webserver.dto.HttpClientPageDto;
@@ -21,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +62,58 @@ public class HttpClientService {
         }
     }
 
+    public String  generateLoginRequest(LoginDto dto) {
+        String loginType = dto.getLoginType();
+        String requestUrl;
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            if (loginType.equals("KAKAO")) {
+                requestUrl = UrlCreateUtil.createKakaoLoginRequestUrl();
+                HttpGet httpGet = new HttpGet(requestUrl);
+                httpGet.setHeader("Content-type", "application/json");
+                httpGet.setHeader("Authorization","Bearer "+dto.getOauthAccessToken());
+                return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
+            } else if (loginType.equals("NAVER")) {
+                requestUrl = UrlCreateUtil.createNaverLoginRequestUrl();
+                HttpGet httpGet = new HttpGet(requestUrl);
+                httpGet.setHeader("Content-type", "application/json");
+                httpGet.setHeader("Authorization","Bearer "+dto.getOauthAccessToken());
+                return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
+            } else {
+                requestUrl = UrlCreateUtil.createGoogleLoginRequestUrl(dto.getOauthAccessToken());
+                HttpGet httpGet = new HttpGet(requestUrl);
+                return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
+            }
+        } catch (IOException e) {
+            throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
+        }
+    }
+    private ResponseHandler<?> getLoginHandler(String loginType) {
+        return response -> {
+            int status = response.getStatusLine().getStatusCode();
+            if (status >= 200 && status < 300) {
+                HttpEntity responseBody = response.getEntity();
+                String res = EntityUtils.toString(responseBody);
+                if (loginType.equals("KAKAO")) {
+                    JsonElement kakaoElement = JsonParser.parseString(res);
+                    JsonElement kakaoAccount = kakaoElement.getAsJsonObject().get("kakao_account");
+                    return kakaoAccount.getAsJsonObject().get("email").getAsString();
+                } else if (loginType.equals("NAVER")) {
+                    JsonElement naverElement = JsonParser.parseString(res);
+                    JsonElement naverAccount = naverElement.getAsJsonObject().get("response");
+                    return naverAccount.getAsJsonObject().get("email").getAsString();
+                } else {
+                    JsonElement googleElement = JsonParser.parseString(res);
+                    return googleElement.getAsJsonObject().get("email").getAsString();
+                }
+
+            } else {
+                //Todo : Status Code 활용하여 예외처리
+                throw new ClientProtocolException("Unexpected response status: " + status);
+            }
+        };
+    }
+
+
 
     private ResponseHandler<?> getResponseHandler() {
         return response -> {
@@ -78,7 +134,9 @@ public class HttpClientService {
                     );
                 } else {
                     // Todo: 응답 객체 추가
-                    return null;
+                    return mapper.readValue(
+                            res,
+                            Map.class);
                 }
 
             } else {
