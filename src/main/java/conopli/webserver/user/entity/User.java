@@ -1,5 +1,6 @@
 package conopli.webserver.user.entity;
 
+import conopli.webserver.audit.Auditable;
 import conopli.webserver.constant.LoginType;
 import conopli.webserver.constant.UserStatus;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.util.List;
 @Table(name = "users")
 @Builder
 @AllArgsConstructor
-public class User {
+public class User extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +26,6 @@ public class User {
 
     @Column(nullable = false)
     private String nickName;
-
-    @Column(nullable = false)
-    private String password;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
