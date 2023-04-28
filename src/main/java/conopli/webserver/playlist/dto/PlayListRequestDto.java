@@ -1,6 +1,5 @@
 package conopli.webserver.playlist.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class PlayListDto {
-
-    private Long playListId;
+public class PlayListRequestDto {
 
     private String title;
 

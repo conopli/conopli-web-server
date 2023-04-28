@@ -6,18 +6,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class PlayListDto {
+public class PlayListModifyRequestDto {
 
     private Long playListId;
 
-    private String title;
-
-    private String color;
-
-    private String emoji;
+    private List<Integer> orderList;
 
 }
