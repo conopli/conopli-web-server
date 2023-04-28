@@ -1,6 +1,5 @@
 package conopli.webserver.music.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,21 +11,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserMusicDto {
 
-    Long userMusicId;
+    private String userMusicId;
 
-    Long musicId;
+    private String playListId;
 
-    String num;
+    private String musicId;
 
-    String title;
+    private String num;
 
-    String singer;
+    private String title;
 
-    String lyricist;
+    private String singer;
 
-    String composer;
+    private String lyricist;
 
-    String youtubeUrl;
+    private String composer;
 
-    String nation;
+    private String youtubeUrl;
+
+    private String nation;
+
+    private Integer orderNum;
+
 }
