@@ -2,6 +2,7 @@ package conopli.webserver.auth.controller;
 
 import com.google.gson.Gson;
 import conopli.webserver.auth.dto.LoginDto;
+import conopli.webserver.auth.service.AuthService;
 import conopli.webserver.auth.token.JwtAuthorityUtils;
 import conopli.webserver.auth.token.JwtTokenizer;
 import conopli.webserver.auth.token.Token;
@@ -10,6 +11,8 @@ import conopli.webserver.auth.token.refresh.repository.RefreshRepository;
 import conopli.webserver.auth.token.refresh.service.RefreshService;
 import conopli.webserver.config.SecurityConfig;
 import conopli.webserver.constant.ErrorCode;
+import conopli.webserver.exception.ServiceLogicException;
+import conopli.webserver.service.HttpClientService;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
@@ -25,6 +28,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.headers.HeaderDocumentation;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -35,6 +39,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -46,8 +51,7 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -60,6 +64,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("local")
 @Import({JwtAuthorityUtils.class,
         JwtTokenizer.class,
+        AuthService.class,
         SecurityConfig.class})
 class AuthControllerTest {
 
@@ -76,7 +81,13 @@ class AuthControllerTest {
     private JwtTokenizer jwtTokenizer;
 
     @MockBean
+    private HttpClientService httpClientService;
+
+    @MockBean
     private UserService userService;
+
+    @Autowired
+    private AuthService authService;
 
     @Test
     @DisplayName("로그인 TEST - OK")
@@ -197,9 +208,9 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8.displayName());
+        ResultActions perform = mockMvc.perform(result);
         // Then
-        mockMvc.perform(result)
-                .andExpect(status().isOk())
+        perform.andExpect(status().isOk())
                 .andDo(
                         MockMvcRestDocumentation.document("refreshOk",
                                 ApiDocumentUtils.getRequestPreProcessor(),
@@ -218,6 +229,7 @@ class AuthControllerTest {
                                                 fieldWithPath("userId").type(JsonFieldType.STRING).description("회원 식별자"),
                                                 fieldWithPath("userStatus").type(JsonFieldType.STRING).description("회원 타입")
                                         ))));
+
     }
 
     @Test
