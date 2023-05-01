@@ -25,9 +25,6 @@ public class User extends Auditable {
     private String email;
 
     @Column(nullable = false)
-    private String nickName;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
