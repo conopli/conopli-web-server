@@ -191,7 +191,7 @@ public class JwtTokenizer {
     }
 
     public String getEmail(String token) {
-        Key key = getKeyFromBase64EncodedSecretKey(encodeBase64SecretKey(secretKey));
+        Key key = getKeyFromBase64EncodedSecretKey(encodeBase64SecretKey(getSecretKey()));
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
