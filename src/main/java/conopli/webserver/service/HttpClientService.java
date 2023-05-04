@@ -5,10 +5,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import conopli.webserver.auth.dto.LoginDto;
 import conopli.webserver.constant.ErrorCode;
+import conopli.webserver.dto.HttpClientDto;
 import conopli.webserver.dto.HttpClientKakaoMapDto;
 import conopli.webserver.dto.HttpClientPageDto;
 import conopli.webserver.exception.ServiceLogicException;
 import conopli.webserver.map.dto.MapSearchDto;
+import conopli.webserver.search.dto.PopularRequestDto;
 import conopli.webserver.search.dto.SearchDto;
 import conopli.webserver.utils.UrlCreateUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +37,48 @@ public class HttpClientService {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public HttpClientPageDto generateMusicRequest(SearchDto dto) {
+    public HttpClientPageDto generateSearchMusicRequest(SearchDto dto) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchRequestUrl(dto));
             httpGet.setHeader("Content-type", "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientPageDto execute = (HttpClientPageDto) httpclient.execute(httpGet, getResponseHandler());
+            return execute;
+        } catch (IOException e) {
+            throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
+        }
+    }
+
+    public HttpClientDto generateSearchMusicByNumRequest(String musicNum) {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchByNumRequestUrl(musicNum));
+            httpGet.setHeader("Content-type", "application/json");
+            log.info("Executing request = {} ", httpGet.getRequestLine());
+            HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
+            return execute;
+        } catch (IOException e) {
+            throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
+        }
+    }
+
+    public HttpClientDto generatePopularMusicRequest(PopularRequestDto dto) {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(UrlCreateUtil.createPopularRequestUrl(dto));
+            httpGet.setHeader("Content-type", "application/json");
+            log.info("Executing request = {} ", httpGet.getRequestLine());
+            HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
+            return execute;
+        } catch (IOException e) {
+            throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
+        }
+    }
+
+    public HttpClientDto generateNewMusicRequest() {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(UrlCreateUtil.createNewMusicRequestUrl());
+            httpGet.setHeader("Content-type", "application/json");
+            log.info("Executing request = {} ", httpGet.getRequestLine());
+            HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
         } catch (IOException e) {
             throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
@@ -136,7 +173,7 @@ public class HttpClientService {
                     // Todo: 응답 객체 추가
                     return mapper.readValue(
                             res,
-                            Map.class);
+                            HttpClientDto.class);
                 }
 
             } else {
