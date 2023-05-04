@@ -3,13 +3,12 @@ package conopli.webserver.search.controller;
 import com.google.gson.Gson;
 import conopli.webserver.auth.token.JwtAuthorityUtils;
 import conopli.webserver.auth.token.JwtTokenizer;
-import conopli.webserver.auth.token.Token;
 import conopli.webserver.auth.token.refresh.repository.RefreshRepository;
 import conopli.webserver.auth.token.refresh.service.RefreshService;
 import conopli.webserver.config.SecurityConfig;
 import conopli.webserver.search.dto.PopularRequestDto;
 import conopli.webserver.search.dto.SearchDto;
-import conopli.webserver.user.controller.UserController;
+import conopli.webserver.service.HttpClientService;
 import conopli.webserver.utils.ApiDocumentUtils;
 import conopli.webserver.utils.StubUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +20,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.headers.HeaderDocumentation;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -35,8 +33,6 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("local")
 @Import({JwtAuthorityUtils.class,
         JwtTokenizer.class,
+        HttpClientService.class,
         SecurityConfig.class})
 class SearchControllerTest {
 
@@ -56,6 +53,9 @@ class SearchControllerTest {
 
     @Autowired
     private JwtTokenizer jwtTokenizer;
+
+    @Autowired
+    private HttpClientService httpClientService;
 
     @MockBean
     private RefreshService refreshService;
@@ -67,15 +67,12 @@ class SearchControllerTest {
     @Test
     @DisplayName("음악 검색 TEST")
     @WithMockUser
-    void serachMusic() throws Exception {
+    void searchMusic() throws Exception {
         // Given
         SearchDto searchDto = StubUtils.createSearchDto();
-        Gson gson = new Gson();
-        String content = gson.toJson(searchDto);
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
-                .get("/api/search")
-                .content(content)
+                .get("/api/search?searchType="+searchDto.getSearchType()+"&searchKeyWord="+searchDto.getSearchKeyWord()+"&searchNation="+searchDto.getSearchNation()+"&page="+searchDto.getPage())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8.displayName());
@@ -86,19 +83,16 @@ class SearchControllerTest {
                         MockMvcRestDocumentation.document("searchMusic",
                                 ApiDocumentUtils.getRequestPreProcessor(),
                                 ApiDocumentUtils.getResponsePreProcessor(),
-                                PayloadDocumentation.requestFields(
-                                        List.of(
-                                                fieldWithPath("searchType").type(JsonFieldType.NUMBER).description("검색 타입 (1 = 제목, 2 = 가수 , 4 = 작사가 , 8 = 작곡가, 16 = 곡번호)"),
-                                                fieldWithPath("page").type(JsonFieldType.NUMBER).description("요청 페이지 정보"),
-                                                fieldWithPath("searchKeyWord").type(JsonFieldType.STRING).description("검색 키워드"),
-                                                fieldWithPath("searchNation").type(JsonFieldType.STRING).description("검색 국가")
-                                        )
-
+                                RequestDocumentation.queryParameters(
+                                        parameterWithName("searchType").description("검색 타입 (1 = 제목, 2 = 가수 , 4 = 작사가 , 8 = 작곡가, 16 = 곡번호)"),
+                                        parameterWithName("page").description("요청 페이지 정보"),
+                                        parameterWithName("searchKeyWord").description("검색 키워드"),
+                                        parameterWithName("searchNation").description("검색 국가")
                                 ),
                                 PayloadDocumentation.responseFields(
                                         List.of(
                                                 fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
-                                                fieldWithPath("data[].musicId").type(JsonFieldType.STRING).description("음악 식별자"),
+                                                fieldWithPath("data[].musicId").type(JsonFieldType.NUMBER).description("음악 식별자"),
                                                 fieldWithPath("data[].num").type(JsonFieldType.STRING).description("곡번호"),
                                                 fieldWithPath("data[].title").type(JsonFieldType.STRING).description("제목"),
                                                 fieldWithPath("data[].singer").type(JsonFieldType.STRING).description("가수"),
@@ -121,12 +115,9 @@ class SearchControllerTest {
     void popularMusic() throws Exception {
         // Given
         PopularRequestDto requestDto = StubUtils.createPopularRequestDto();
-        Gson gson = new Gson();
-        String content = gson.toJson(requestDto);
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
-                .get("/api/search/popular")
-                .content(content)
+                .get("/api/search/popular?searchType="+requestDto.getSearchType()+"&syy="+requestDto.getSyy()+"&smm="+requestDto.getSmm()+"&eyy="+requestDto.getEyy()+"&emm="+requestDto.getEmm())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8.displayName());
@@ -137,15 +128,12 @@ class SearchControllerTest {
                         MockMvcRestDocumentation.document("popularMusic",
                                 ApiDocumentUtils.getRequestPreProcessor(),
                                 ApiDocumentUtils.getResponsePreProcessor(),
-                                PayloadDocumentation.requestFields(
-                                        List.of(
-                                                fieldWithPath("searchType").type(JsonFieldType.STRING).description("검색 타입 (1 = 가요 2 = POP 3 = J-POP)"),
-                                                fieldWithPath("syy").type(JsonFieldType.STRING).description("시작 연도(ex. 2023)"),
-                                                fieldWithPath("smm").type(JsonFieldType.STRING).description("시작 월(ex. 04)"),
-                                                fieldWithPath("eyy").type(JsonFieldType.STRING).description("종료 연도(ex. 2023)"),
-                                                fieldWithPath("emm").type(JsonFieldType.STRING).description("종료 월(ex. 04)")
-                                        )
-
+                                RequestDocumentation.queryParameters(
+                                        parameterWithName("searchType").description("검색 타입 (1 = 제목, 2 = 가수 , 4 = 작사가 , 8 = 작곡가, 16 = 곡번호)"),
+                                        parameterWithName("syy").description("시작 연도(ex. 2023)"),
+                                        parameterWithName("smm").description("시작 월(ex. 04)"),
+                                        parameterWithName("eyy").description("종료 연도(ex. 2023)"),
+                                        parameterWithName("emm").description("종료 월(ex. 04)")
                                 ),
                                 PayloadDocumentation.responseFields(
                                         List.of(
