@@ -1,15 +1,14 @@
 package conopli.webserver.playlist.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+@Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
 public class PlayListRequestDto {
+
+    private Long userId;
 
     private String title;
 
