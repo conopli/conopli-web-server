@@ -26,4 +26,10 @@ public class UserRepositoryImpl implements UserRepository {
         return repository.findByEmail(email)
                 .orElseThrow(() -> new ServiceLogicException(ErrorCode.NOT_FOUND_USER));
     }
+
+    @Override
+    public User findUserById(Long userId) {
+        return repository.findById(userId)
+                .orElseThrow(() -> new ServiceLogicException(ErrorCode.NOT_FOUND_USER));
+    }
 }
