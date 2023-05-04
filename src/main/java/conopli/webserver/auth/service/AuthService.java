@@ -67,7 +67,7 @@ public class AuthService {
         if (authentication != null) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
-        jwtTokenizer.deleteRefresh(request.getHeader("Authorization"));
+        jwtTokenizer.deleteRefresh(request.getHeader("Authorization").replace("Bearer ", ""));
         log.info("# User Logout");
     }
 }
