@@ -41,7 +41,7 @@ public class StubUtils {
         return SearchDto.builder()
                 .searchType(1)
                 .page(0)
-                .searchKeyWord("test")
+                .searchKeyWord("아리랑")
                 .searchNation("KOR")
                 .build();
     }
@@ -96,6 +96,7 @@ public class StubUtils {
 
     public static PlayListRequestDto createPlayListRequestDto() {
         return PlayListRequestDto.builder()
+                .userId(1L)
                 .title("플레이 리스트 이름")
                 .color("컬러 코드")
                 .emoji("이모지 코드")
@@ -133,7 +134,6 @@ public class StubUtils {
         User get = User.builder()
                 .userId(1L)
                 .email("test@test.com")
-                .nickName("수포자")
                 .userStatus(UserStatus.VERIFIED)
                 .loginType(LoginType.KAKAO)
                 .build();
