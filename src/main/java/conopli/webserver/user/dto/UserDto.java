@@ -29,7 +29,6 @@ public class UserDto {
                 .email(user.getEmail())
                 .loginType(user.getLoginType().name())
                 .userStatus(user.getUserStatus().name())
-                .nickName(user.getNickName())
                 .build();
     }
 
