@@ -184,6 +184,7 @@ class UserMusicControllerTest {
                                 ),
                                 PayloadDocumentation.requestFields(
                                         List.of(
+                                                fieldWithPath("userId").type(JsonFieldType.STRING).description("회원 식별자"),
                                                 fieldWithPath("title").type(JsonFieldType.STRING).description("플레이 리스트 제목"),
                                                 fieldWithPath("color").type(JsonFieldType.STRING).description("컬러 코드"),
                                                 fieldWithPath("emoji").type(JsonFieldType.STRING).description("이모지 코드")
@@ -286,6 +287,7 @@ class UserMusicControllerTest {
                                 ),
                                 PayloadDocumentation.requestFields(
                                         List.of(
+                                                fieldWithPath("userId").type(JsonFieldType.STRING).description("회원 식별자"),
                                                 fieldWithPath("title").type(JsonFieldType.STRING).description("플레이 리스트 제목"),
                                                 fieldWithPath("color").type(JsonFieldType.STRING).description("컬러 코드"),
                                                 fieldWithPath("emoji").type(JsonFieldType.STRING).description("이모지 코드")
