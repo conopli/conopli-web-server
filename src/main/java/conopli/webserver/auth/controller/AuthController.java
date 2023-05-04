@@ -37,9 +37,10 @@ public class AuthController {
             @ModelAttribute LoginDto loginDto,
             HttpServletResponse response
     ) {
-        response.setHeader("Authorization", "AccessToken");
-        response.setHeader("userId", "1");
-        response.setHeader("userStatus", "VERIFIED");
+//        response.setHeader("Authorization", "AccessToken");
+//        response.setHeader("userId", "1");
+//        response.setHeader("userStatus", "VERIFIED");
+        jwtTokenizer.delegateToken("test@test.com",response);
         return ResponseEntity.ok().build();
     }
 
