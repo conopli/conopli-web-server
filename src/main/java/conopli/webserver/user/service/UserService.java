@@ -5,6 +5,7 @@ import conopli.webserver.constant.ErrorCode;
 import conopli.webserver.constant.LoginType;
 import conopli.webserver.constant.UserStatus;
 import conopli.webserver.exception.ServiceLogicException;
+import conopli.webserver.user.dto.UserDto;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -18,20 +19,27 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User verifiedUserById(Long userId) {
+    public UserDto searchUser(Long userId) {
+        return UserDto.of(userRepository.findUserById(userId));
+    }
 
-        return null;
+    public void deleteUser(Long userId) {
+
+    }
+
+    public User verifiedUserById(Long userId) {
+        return userRepository.findUserById(userId);
     }
 
     public User verifiedUserByEmail(String email) {
-        return null;
+        return userRepository.findUserByEmail(email);
     }
 
-    public User createOrVerifiedUserByEmailAndLoginType(String email,String loginType) {
+    public UserDto createOrVerifiedUserByEmailAndLoginType(String email, String loginType) {
         try {
             User findUser = userRepository.findUserByEmail(email);
             if (findUser.getLoginType().equals(LoginType.valueOf(loginType.toUpperCase()))) {
-                return findUser;
+                return UserDto.of(findUser);
             } else {
                 throw new ServiceLogicException(ErrorCode.EXIST_USER);
             }
@@ -43,7 +51,7 @@ public class UserService {
                         .loginType(LoginType.valueOf(loginType.toUpperCase()))
                         .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
                         .build();
-                return userRepository.saveUser(user);
+                return UserDto.of(userRepository.saveUser(user));
             } else {
                 throw e;
             }
