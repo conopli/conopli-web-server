@@ -3,11 +3,13 @@ package conopli.webserver.playlist.entity;
 
 import conopli.webserver.audit.Auditable;
 import conopli.webserver.music.entity.UserMusic;
+import conopli.webserver.playlist.dto.PlayListRequestDto;
 import conopli.webserver.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -51,6 +53,26 @@ public class PlayList extends Auditable {
     public void addUserMusic(UserMusic userMusic) {
         this.userMusic.add(userMusic);
         userMusic.addPlayList(this);
+    }
+
+    public static PlayList of(PlayListRequestDto requestDto) {
+        return PlayList.builder()
+                .title(requestDto.getTitle())
+                .color(requestDto.getColor())
+                .emoji(requestDto.getEmoji())
+                .userMusic(new LinkedHashSet<>())
+                .countingOrder(0)
+                .build();
+    }
+
+    public PlayList updatePlayList(PlayListRequestDto requestDto) {
+        this.title = Optional.of(requestDto.getTitle())
+                .orElse(this.title);
+        this.color = Optional.of(requestDto.getColor())
+                .orElse(this.color);
+        this.emoji = Optional.of(requestDto.getEmoji())
+                .orElse(this.emoji);
+        return this;
     }
 
 }
