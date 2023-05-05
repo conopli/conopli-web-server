@@ -1,1 +1,42 @@
 
+server:
+  port: 8080
+spring:
+  datasource:
+    url: ${MAIN_DB_URL}
+    username: ${MAIN_DB_ID}
+    password: ${MAIN_DB_PW}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    #    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+  sql:
+    init:
+      mode: never
+
+
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+logging.level:
+  org.hibernate.SQL: debug
+  com:
+    amazonaws:
+      util:
+        EC2MetadataUtils: error
+  org:
+    hibernate:
+      type:
+        descriptor:
+          sql:
+            org.hibernate.type.descriptor.sql.BasicBinder: trace
+    springframework:
+      web.servlet: debug
