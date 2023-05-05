@@ -13,6 +13,7 @@ import conopli.webserver.map.dto.MapSearchDto;
 import conopli.webserver.search.dto.PopularRequestDto;
 import conopli.webserver.search.dto.SearchDto;
 import conopli.webserver.utils.UrlCreateUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -99,7 +100,7 @@ public class HttpClientService {
         }
     }
 
-    public String  generateLoginRequest(LoginDto dto) {
+    public String generateLoginRequest(LoginDto dto) {
         String loginType = dto.getLoginType();
         String requestUrl;
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
