@@ -3,6 +3,7 @@ package conopli.webserver.auth.service;
 import conopli.webserver.auth.dto.LoginDto;
 import conopli.webserver.auth.token.JwtTokenizer;
 import conopli.webserver.service.HttpClientService;
+import conopli.webserver.user.dto.UserDto;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,10 +35,10 @@ public class AuthService {
             HttpServletResponse response
     ) {
         String email = httpClientService.generateLoginRequest(loginDto);
-        User user = userService.createOrVerifiedUserByEmailAndLoginType(email, loginDto.getLoginType());
+        UserDto user = userService.createOrVerifiedUserByEmailAndLoginType(email, loginDto.getLoginType());
         jwtTokenizer.delegateToken(user.getEmail(), response);
         response.setHeader("userId", String.valueOf(user.getUserId()));
-        response.setHeader("userStatus", user.getUserStatus().name());
+        response.setHeader("userStatus", user.getUserStatus());
     }
 
     public void verifyUser(
