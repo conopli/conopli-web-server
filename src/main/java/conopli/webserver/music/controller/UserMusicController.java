@@ -5,6 +5,7 @@ import conopli.webserver.dto.PageResponseDto;
 import conopli.webserver.dto.ResponseDto;
 import conopli.webserver.music.dto.UserMusicDto;
 import conopli.webserver.music.dto.UserMusicRequestDto;
+`import conopli.webserver.music.service.UserMusicService;
 import conopli.webserver.playlist.dto.PlayListDto;
 import conopli.webserver.playlist.dto.PlayListModifyRequestDto;
 import conopli.webserver.playlist.dto.PlayListRequestDto;
@@ -13,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,26 +28,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserMusicController {
 
+    private final UserMusicService userMusicService;
+
     @GetMapping("/playlist/{userId}")
     public ResponseEntity<?> userPlaylist(
-            @PathVariable String userId
+            @PathVariable Long userId
     ) {
         // Todo : User의 플레이 리스트 조회
-        List<PlayListDto> dtoList = List.of(StubUtils.createPlayListDto(), StubUtils.createPlayListDto());
-        return ResponseEntity.ok(ResponseDto.of(dtoList));
+        ResponseDto userPlayList = userMusicService.findUserPlayList(userId);
+        return ResponseEntity.ok(userPlayList);
     }
 
     @GetMapping("/{playListId}")
     public ResponseEntity<?> userMusic(
-            @PathVariable String playListId
+            @PathVariable Long playListId,
+            @PageableDefault(page = 0, size = 20, sort = "orderNum", direction = Sort.Direction.ASC)
+            Pageable pageable
     ) {
         // Todo : User의 플레이 리스트의 음악 조회
-        UserMusicDto dto1 = StubUtils.createUserMusicDto(1);
-        UserMusicDto dto2 = StubUtils.createUserMusicDto(2);
-        List<UserMusicDto> dtoList = List.of(dto1, dto2);
-        Page page = new PageImpl(dtoList);
-        PageResponseDto response = PageResponseDto.of(dtoList, page);
-        return ResponseEntity.ok(response);
+        PageResponseDto userMusic = userMusicService.findUserMusic(playListId, pageable);
+        return ResponseEntity.ok(userMusic);
     }
 
     @PostMapping("/playlist")
@@ -65,7 +69,7 @@ public class UserMusicController {
 
     @PatchMapping("/playlist/{playListId}")
     public ResponseEntity<?> modifyPlayList(
-            @PathVariable String playListId,
+            @PathVariable Long playListId,
             @RequestBody PlayListRequestDto requestDto
     ) {
 
@@ -88,7 +92,7 @@ public class UserMusicController {
 
     @DeleteMapping("/playlist/{playListId}")
     public ResponseEntity<?> deletePlayList(
-            @PathVariable String playListId
+            @PathVariable Long playListId
     ) {
         // Todo : User 특정 플레이 리스트 삭제
         return ResponseEntity.noContent().build();
@@ -96,7 +100,7 @@ public class UserMusicController {
 
     @DeleteMapping("/{userMusicId}")
     public ResponseEntity<?> deleteUserMusic(
-            @PathVariable String userMusicId
+            @PathVariable Long userMusicId
     ) {
         // Todo : User 플레이 리스트의 음악 삭제
         return ResponseEntity.noContent().build();

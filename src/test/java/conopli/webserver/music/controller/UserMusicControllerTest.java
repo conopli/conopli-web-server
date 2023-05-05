@@ -7,7 +7,11 @@ import conopli.webserver.auth.token.Token;
 import conopli.webserver.auth.token.refresh.repository.RefreshRepository;
 import conopli.webserver.auth.token.refresh.service.RefreshService;
 import conopli.webserver.config.SecurityConfig;
+import conopli.webserver.dto.PageResponseDto;
+import conopli.webserver.dto.ResponseDto;
+import conopli.webserver.music.dto.UserMusicDto;
 import conopli.webserver.music.dto.UserMusicRequestDto;
+import conopli.webserver.music.service.UserMusicService;
 import conopli.webserver.playlist.dto.PlayListModifyRequestDto;
 import conopli.webserver.playlist.dto.PlayListRequestDto;
 import conopli.webserver.user.entity.User;
@@ -21,6 +25,9 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.headers.HeaderDocumentation;
@@ -41,6 +48,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -68,6 +78,9 @@ class UserMusicControllerTest {
     @MockBean
     private RefreshRepository refreshRepository;
 
+    @MockBean
+    private UserMusicService userMusicService;
+
     @Test
     @DisplayName("회원 플레이 리스트 조회 TEST")
     @WithMockUser
@@ -75,6 +88,13 @@ class UserMusicControllerTest {
         // Given
         Token token = createToken();
         Long userId = 1L;
+        given(userMusicService.findUserPlayList(anyLong()))
+                .willReturn(
+                        ResponseDto.of(
+                                List.of(
+                                        StubUtils.createPlayListDto(),
+                                        StubUtils.createPlayListDto()
+                                )));
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .get("/api/user-music/playlist/{userId}", userId)
@@ -112,6 +132,13 @@ class UserMusicControllerTest {
         // Given
         Token token = createToken();
         Long playListId = 1L;
+        UserMusicDto dto1 = StubUtils.createUserMusicDto(1);
+        UserMusicDto dto2 = StubUtils.createUserMusicDto(2);
+        List<UserMusicDto> dtoList = List.of(dto1, dto2);
+        Page page = new PageImpl(dtoList);
+        PageResponseDto response = PageResponseDto.of(dtoList, page);
+        given(userMusicService.findUserMusic(anyLong(), any(Pageable.class)))
+                .willReturn(response);
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .get("/api/user-music/{playListId}", playListId)
@@ -184,7 +211,7 @@ class UserMusicControllerTest {
                                 ),
                                 PayloadDocumentation.requestFields(
                                         List.of(
-                                                fieldWithPath("userId").type(JsonFieldType.STRING).description("회원 식별자"),
+                                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                                 fieldWithPath("title").type(JsonFieldType.STRING).description("플레이 리스트 제목"),
                                                 fieldWithPath("color").type(JsonFieldType.STRING).description("컬러 코드"),
                                                 fieldWithPath("emoji").type(JsonFieldType.STRING).description("이모지 코드")
@@ -287,7 +314,7 @@ class UserMusicControllerTest {
                                 ),
                                 PayloadDocumentation.requestFields(
                                         List.of(
-                                                fieldWithPath("userId").type(JsonFieldType.STRING).description("회원 식별자"),
+                                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                                 fieldWithPath("title").type(JsonFieldType.STRING).description("플레이 리스트 제목"),
                                                 fieldWithPath("color").type(JsonFieldType.STRING).description("컬러 코드"),
                                                 fieldWithPath("emoji").type(JsonFieldType.STRING).description("이모지 코드")
@@ -361,10 +388,6 @@ class UserMusicControllerTest {
 
                                         ))));
     }
-
-
-
-
 
 
     @Test
