@@ -20,10 +20,10 @@ public class UserMusic extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userMusicId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Long musicId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String num;
 
     @Column(nullable = false)
