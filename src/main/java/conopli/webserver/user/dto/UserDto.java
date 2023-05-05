@@ -2,12 +2,9 @@ package conopli.webserver.user.dto;
 
 
 import conopli.webserver.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+@Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
