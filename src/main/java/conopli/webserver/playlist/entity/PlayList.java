@@ -66,11 +66,11 @@ public class PlayList extends Auditable {
     }
 
     public PlayList updatePlayList(PlayListRequestDto requestDto) {
-        this.title = Optional.of(requestDto.getTitle())
+        this.title = Optional.ofNullable(requestDto.getTitle())
                 .orElse(this.title);
-        this.color = Optional.of(requestDto.getColor())
+        this.color = Optional.ofNullable(requestDto.getColor())
                 .orElse(this.color);
-        this.emoji = Optional.of(requestDto.getEmoji())
+        this.emoji = Optional.ofNullable(requestDto.getEmoji())
                 .orElse(this.emoji);
         return this;
     }
