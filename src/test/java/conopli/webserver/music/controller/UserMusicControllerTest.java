@@ -51,6 +51,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -191,6 +192,8 @@ class UserMusicControllerTest {
         PlayListRequestDto request = StubUtils.createPlayListRequestDto();
         Gson gson = new Gson();
         String content = gson.toJson(request);
+        given(userMusicService.createUserPlayList(any(PlayListRequestDto.class)))
+                .willReturn(ResponseDto.of(StubUtils.createPlayListDto()));
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .post("/api/user-music/playlist")
@@ -237,6 +240,8 @@ class UserMusicControllerTest {
         UserMusicRequestDto request = StubUtils.createUserMusicRequestDto();
         Gson gson = new Gson();
         String content = gson.toJson(request);
+        given(userMusicService.createUserMusic(any(UserMusicRequestDto.class)))
+                .willReturn(ResponseDto.of(StubUtils.createUserMusicDto(1)));
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .post("/api/user-music")
@@ -291,6 +296,8 @@ class UserMusicControllerTest {
         PlayListRequestDto request = StubUtils.createPlayListRequestDto();
         Gson gson = new Gson();
         String content = gson.toJson(request);
+        given(userMusicService.modifyPlayList(anyLong(), any(PlayListRequestDto.class)))
+                .willReturn(ResponseDto.of(StubUtils.createPlayListDto()));
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .patch("/api/user-music/playlist/{playListId}", playListId)
@@ -341,6 +348,13 @@ class UserMusicControllerTest {
         PlayListModifyRequestDto request = StubUtils.createPlayListModifyRequestDto();
         Gson gson = new Gson();
         String content = gson.toJson(request);
+        UserMusicDto dto1 = StubUtils.createUserMusicDto(1);
+        UserMusicDto dto2 = StubUtils.createUserMusicDto(2);
+        List<UserMusicDto> dtoList = List.of(dto1, dto2);
+        Page page = new PageImpl(dtoList);
+        PageResponseDto response = PageResponseDto.of(dtoList, page);
+        given(userMusicService.modifyUserMusic(any(PlayListModifyRequestDto.class)))
+                .willReturn(response);
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .patch("/api/user-music")
@@ -397,6 +411,7 @@ class UserMusicControllerTest {
         // Given
         Token token = createToken();
         Long playListId = 1L;
+        doNothing().when(userMusicService).deleteUserPlayList(anyLong());
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .delete("/api/user-music/playlist/{playListId}", playListId)
@@ -428,9 +443,11 @@ class UserMusicControllerTest {
         // Given
         Token token = createToken();
         Long userMusicId = 1L;
+        Long playListId = 1L;
+        doNothing().when(userMusicService).deleteUserMusic(anyLong(),anyLong());
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
-                .delete("/api/user-music/{userMusicId}", userMusicId)
+                .delete("/api/user-music/{playListId}/{userMusicId}", playListId, userMusicId)
                 .header("Authorization", token.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -443,6 +460,7 @@ class UserMusicControllerTest {
                                 ApiDocumentUtils.getRequestPreProcessor(),
                                 ApiDocumentUtils.getResponsePreProcessor(),
                                 RequestDocumentation.pathParameters(
+                                        parameterWithName("playListId").description("플레이 리스트 식별자"),
                                         parameterWithName("userMusicId").description("저장 음악 식별자")
                                 ),
                                 HeaderDocumentation.requestHeaders(

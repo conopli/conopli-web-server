@@ -54,7 +54,8 @@ public class UserMusicController {
             @RequestBody PlayListRequestDto requestDto
     ) {
         // Todo : User의 플레이 리스트 생성
-        return ResponseEntity.ok(ResponseDto.of(StubUtils.createPlayListDto()));
+        ResponseDto response = userMusicService.createUserPlayList(requestDto);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -62,7 +63,8 @@ public class UserMusicController {
             @RequestBody UserMusicRequestDto requestDto
     ) {
         // Todo : User의 플레이 리스트에 음악 저장
-        return ResponseEntity.ok(ResponseDto.of(StubUtils.createUserMusicDto(1)));
+        ResponseDto response = userMusicService.createUserMusic(requestDto);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -71,9 +73,9 @@ public class UserMusicController {
             @PathVariable Long playListId,
             @RequestBody PlayListRequestDto requestDto
     ) {
-
         // Todo : User의 특정 플레이리스트 수정
-        return ResponseEntity.ok(ResponseDto.of(StubUtils.createPlayListDto()));
+        ResponseDto response = userMusicService.modifyPlayList(playListId, requestDto);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping
@@ -81,11 +83,7 @@ public class UserMusicController {
             @RequestBody PlayListModifyRequestDto requestDto
             ) {
         // Todo : User 플레이 리스트의 음악 수정
-        UserMusicDto dto1 = StubUtils.createUserMusicDto(1);
-        UserMusicDto dto2 = StubUtils.createUserMusicDto(2);
-        List<UserMusicDto> dtoList = List.of(dto1, dto2);
-        Page page = new PageImpl(dtoList);
-        PageResponseDto response = PageResponseDto.of(dtoList, page);
+        PageResponseDto response = userMusicService.modifyUserMusic(requestDto);
         return ResponseEntity.ok(response);
     }
 
@@ -94,17 +92,17 @@ public class UserMusicController {
             @PathVariable Long playListId
     ) {
         // Todo : User 특정 플레이 리스트 삭제
+        userMusicService.deleteUserPlayList(playListId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{userMusicId}")
+    @DeleteMapping("/{playListId}/{userMusicId}")
     public ResponseEntity<?> deleteUserMusic(
-            @PathVariable Long userMusicId
+            @PathVariable Long userMusicId,
+            @PathVariable Long playListId
     ) {
         // Todo : User 플레이 리스트의 음악 삭제
+        userMusicService.deleteUserMusic(playListId, userMusicId);
         return ResponseEntity.noContent().build();
     }
-
-
-
 }

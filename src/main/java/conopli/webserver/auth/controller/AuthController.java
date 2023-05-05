@@ -4,6 +4,8 @@ import conopli.webserver.auth.dto.AuthSuccessTokenResponseDto;
 import conopli.webserver.auth.dto.LoginDto;
 import conopli.webserver.auth.service.AuthService;
 import conopli.webserver.auth.token.JwtTokenizer;
+import conopli.webserver.service.HttpClientService;
+import conopli.webserver.user.dto.UserDto;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,13 +36,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
-            @ModelAttribute LoginDto loginDto,
+            @RequestBody LoginDto loginDto,
             HttpServletResponse response
     ) {
-//        response.setHeader("Authorization", "AccessToken");
-//        response.setHeader("userId", "1");
-//        response.setHeader("userStatus", "VERIFIED");
-        jwtTokenizer.delegateToken("test@test.com",response);
+        authService.login(loginDto,response);
         return ResponseEntity.ok().build();
     }
 

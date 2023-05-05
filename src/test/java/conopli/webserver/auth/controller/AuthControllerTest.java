@@ -11,8 +11,11 @@ import conopli.webserver.auth.token.refresh.repository.RefreshRepository;
 import conopli.webserver.auth.token.refresh.service.RefreshService;
 import conopli.webserver.config.SecurityConfig;
 import conopli.webserver.constant.ErrorCode;
+import conopli.webserver.constant.LoginType;
+import conopli.webserver.constant.UserStatus;
 import conopli.webserver.exception.ServiceLogicException;
 import conopli.webserver.service.HttpClientService;
+import conopli.webserver.user.dto.UserDto;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
@@ -98,6 +101,16 @@ class AuthControllerTest {
         LoginDto loginDto = StubUtils.createLoginDto();
         Gson gson = new Gson();
         String content = gson.toJson(loginDto);
+        User user = User.builder()
+                .userId(1L)
+                .userStatus(UserStatus.VERIFIED)
+                .email("test@test.com")
+                .loginType(LoginType.valueOf(loginDto.getLoginType()))
+                .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
+                .build();
+        given(httpClientService.generateLoginRequest(any(LoginDto.class))).willReturn(user.getEmail());
+        given(userService.createOrVerifiedUserByEmailAndLoginType(anyString(), anyString()))
+                .willReturn(UserDto.of(user));
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .post("/api/auth/login")

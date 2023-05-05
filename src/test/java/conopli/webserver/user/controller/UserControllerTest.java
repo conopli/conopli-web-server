@@ -9,6 +9,7 @@ import conopli.webserver.auth.token.refresh.service.RefreshService;
 import conopli.webserver.config.SecurityConfig;
 import conopli.webserver.constant.ErrorCode;
 import conopli.webserver.user.entity.User;
+import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
 import conopli.webserver.utils.StubUtils;
 import io.jsonwebtoken.Jwts;
@@ -40,6 +41,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -65,6 +69,9 @@ class UserControllerTest {
     private RefreshService refreshService;
 
     @MockBean
+    private UserService userService;
+
+    @MockBean
     private RefreshRepository refreshRepository;
 
     @Test
@@ -74,6 +81,7 @@ class UserControllerTest {
         // Given
         Token token = createToken();
         Long userId = 1L;
+        given(userService.searchUser(anyLong())).willReturn(StubUtils.createUserDto());
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .get("/api/users/{userId}", userId)
@@ -112,6 +120,7 @@ class UserControllerTest {
         // Given
         Token token = createToken();
         Long userId = 1L;
+        doNothing().when(userService).deleteUser(anyLong());
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .delete("/api/users/{userId}", userId)
