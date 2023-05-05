@@ -2,6 +2,7 @@ package conopli.webserver.playlist.repository.impl;
 
 import conopli.webserver.constant.ErrorCode;
 import conopli.webserver.exception.ServiceLogicException;
+import conopli.webserver.music.repository.UserMusicRepository;
 import conopli.webserver.playlist.entity.PlayList;
 import conopli.webserver.playlist.repository.PlayListJpaRepository;
 import conopli.webserver.playlist.repository.PlayListRepository;
@@ -16,6 +17,8 @@ import java.util.List;
 public class PlayListRepositoryImpl implements PlayListRepository {
 
     private final PlayListJpaRepository jpaRepository;
+
+    private final UserMusicRepository userMusicRepository;
 
     @Override
     public PlayList findPlayListById(Long playListId) {
@@ -35,6 +38,8 @@ public class PlayListRepositoryImpl implements PlayListRepository {
 
     @Override
     public void deletePlayListById(Long playListId) {
+        PlayList findPlayList = findPlayListById(playListId);
+        userMusicRepository.deleteAll(findPlayList.getUserMusic().stream().toList());
         jpaRepository.deleteById(playListId);
     }
 }
