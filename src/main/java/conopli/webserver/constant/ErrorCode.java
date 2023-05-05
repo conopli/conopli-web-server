@@ -7,6 +7,7 @@ public enum ErrorCode {
     BAD_REQUEST(400, "BAD REQUEST"),
     EXIST_REQUEST_URL(400, "Already Exist Request Url "),
     EXIST_USER(400, "Already Exist User Email"),
+    EXIST_USER_MUSIC(400, "Already Exist User Music"),
     ARGUMENT_MISMATCH_BAD_REQUEST(400, "Argument Mismatch Bad Request" ),
     ACCESS_DENIED(403, "ACCESS DENIED"),
     NOT_FOUND(404, "NOT FOUND"),
