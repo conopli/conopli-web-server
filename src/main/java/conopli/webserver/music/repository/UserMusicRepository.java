@@ -13,6 +13,8 @@ public interface UserMusicRepository {
 
     Page<UserMusic> findUserMusicByPlayList(PlayList playList, Pageable pageable);
 
+    UserMusic findUserMusicById(Long userMusicId);
+
     UserMusic saveUserMusic(UserMusic userMusic);
 
     void deleteUserMusicByUserMusicId(Long userMusicId);

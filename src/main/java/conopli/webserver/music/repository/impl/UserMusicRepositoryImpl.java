@@ -33,6 +33,12 @@ public class UserMusicRepositoryImpl implements UserMusicRepository {
     }
 
     @Override
+    public UserMusic findUserMusicById(Long userMusicId) {
+        return jpaRepository.findById(userMusicId)
+                .orElseThrow(() -> new ServiceLogicException(ErrorCode.NOT_FOUND_USER_MUSIC));
+    }
+
+    @Override
     public UserMusic saveUserMusic(UserMusic userMusic) {
         return jpaRepository.save(userMusic);
     }
