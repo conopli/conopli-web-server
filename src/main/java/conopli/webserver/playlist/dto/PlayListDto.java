@@ -1,6 +1,7 @@
 package conopli.webserver.playlist.dto;
 
 
+import conopli.webserver.playlist.entity.PlayList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,5 +20,14 @@ public class PlayListDto {
     private String color;
 
     private String emoji;
+
+    public static PlayListDto of(PlayList list) {
+        return PlayListDto.builder()
+                .playListId(list.getPlayListId())
+                .title(list.getTitle())
+                .color(list.getColor())
+                .emoji(list.getEmoji())
+                .build();
+    }
 
 }
