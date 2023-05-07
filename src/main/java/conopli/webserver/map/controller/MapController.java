@@ -23,7 +23,7 @@ import java.util.Map;
 public class MapController {
 
     @Value("${MAP_API_KEY}")
-    private String mapApiKey;
+    private String mapUrl;
 
     private final MapService mapService;
 
@@ -34,12 +34,13 @@ public class MapController {
             @ModelAttribute MapSearchDto dto
             ) throws JsonProcessingException {
         PageResponseDto res = mapService.searchKakaoMap(dto);
-        System.out.println(res);
-        String s = mapper.writeValueAsString(res);
+        String response = mapper.writeValueAsString(res);
         return new ModelAndView(
                 "map",
-                Map.of("mapApiKey", mapApiKey,
-                        "response", s
+                Map.of("mapUrl", mapUrl,
+                        "response", response,
+                        "lat",dto.getLat(),
+                        "lng",dto.getLng()
                 ));
     }
 }
