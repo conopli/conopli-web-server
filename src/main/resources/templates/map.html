@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicMap</title>
     <style>
         * {
@@ -15,91 +16,162 @@
             height: 100vh;
         }
 
-        .title {
-            padding: 4px 8px;
-            font-size: 16px;
-            font-weight: bold;
+        .container {
             border-radius: 4px;
-            background-color: #fff;
-            border: 1px solid #000
+            box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 3px 1px -2px rgba(0, 0, 0, 0.12), 0px 2px 2px rgba(0, 0, 0, 0.14);
+        }
+
+        .overlay {
+            border-radius: 4px;
+            position: relative;
+            padding: 8px;
+            background: #0D0D0D;
+        }
+
+        .overlay::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            bottom: -5px;
+            left: 50%;
+            border-bottom: 10px solid transparent;
+            border-top: 10px solid #0D0D0D;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            margin-left: -10px;
+            margin-bottom: -10px;
+        }
+
+        .title {
+            color: #fafafa;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .address {
+            color: #fafafa;
+            font-size: 16px;
+            font-weight: normal;
         }
     </style>
 </head>
 
 <body>
-    <div id="map"> </div>
+<div id="map"></div>
 
-    <script type="text/javascript" th:src="${mapUrl}"></script>
-    <script th:inline="javascript">
+<script type="text/javascript" th:src="${mapUrl}"></script>
+<script th:inline="javascript">
 
-        var response = JSON.parse([[@{ __${ response } __}]]);
-        var lat = [[@{ __${ lat } __}]];
-        var lng = [[@{ __${ lng } __}]];
-        let data = response.data;
+    var response = JSON.parse([[@{ __${ response } __}]]);
+    var lat = [[@{ __${ lat } __}]];
+    var lng = [[@{ __${ lng } __}]];
+    let data = response.data;
 
-        console.log(data)
-        console.log(lat)
-        console.log(lng)
+    console.log(data)
+    console.log(lat)
+    console.log(lng)
 
-        var mapContainer = document.getElementById('map'),
-            mapOption = {
-                center: new kakao.maps.LatLng(lat, lng),
-                level: 3
-            };
+    // mapApi로 사용할 요소 지정
+    let mapContainer = document.getElementById('map');
 
-        var map = new kakao.maps.Map(mapContainer, mapOption);
+    // mapApi 옵션
+    let mapOption = {
+        center: new kakao.maps.LatLng(lat, lng),
+        level: 3,
+        disableDoubleClickZoom: false,
+        scrollwheel: true
+    };
 
-        var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다
-            imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
-            imageOption = {offset: new kakao.maps.Point(27, 69)};
+    // mapApi 연결
+    let map = new kakao.maps.Map(mapContainer, mapOption);
 
-        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
-        var markerPosition  = new kakao.maps.LatLng(lat, lng);
+    // 현재 위치 마커 설정
+    let curLocImageSrc = '/currentLocation.svg'; // 이미지 주소
+    let curLocImageSize = new kakao.maps.Size(40, 40); // 이미지 크기
+    let curLocImageOption = { offset: new kakao.maps.Point(20, 20) }; // 이미지 옵션
+    let curLocMarkerImage = new kakao.maps.MarkerImage(curLocImageSrc, curLocImageSize, curLocImageOption); // 마커 이미지 객체 할당
 
-        var marker = new kakao.maps.Marker({
-            position: markerPosition,
-            image: markerImage
+    let curLocMarkerPosition = new kakao.maps.LatLng(lat, lng); // 마커 위치 객체 할당
+
+    // 마커 객체 할당
+    let curLocMarker = new kakao.maps.Marker({
+        position: curLocMarkerPosition,
+        image: curLocMarkerImage,
+        clickable: false,
+        zIndex: 3
+    });
+
+    curLocMarker.setMap(map); // 현재 사용중인 Map에 현재 위치 마커 설정
+
+    // 서버에서 받아온 res를 이용해 커스텀 마커 생성
+    let karaokeImageSrc = '/karaoke.svg'; // 이미지 주소
+    let karaokeImageSize = new kakao.maps.Size(35, 45); // 이미지 크기
+    let karaokeImageOption = { offset: new kakao.maps.Point(17.5, 25) }; // 이미지 옵션
+    let karaokeMarkerImage = new kakao.maps.MarkerImage(karaokeImageSrc, karaokeImageSize, karaokeImageOption); // 마커 이미지 객체 할당
+
+    // 오버레이 객체를 담을 변수 선언
+    const overlays = [];
+
+    let isOpenOverlays = false;
+
+    // 데이터를 순회하면서 마커 및 오버레이 생성
+    data.forEach(el => {
+        // 각 객체에 주입할 데이터 변수 선언
+        const content = el.placeName;
+        const address = el.roadAddressName;
+        const latlng = new kakao.maps.LatLng(el.lat, el.lng);
+
+        // 마커 생성 및 적용
+        const karaokeMarker = new kakao.maps.Marker({
+            map: map,
+            position: latlng,
+            image: karaokeMarkerImage,
+            title: content
         });
-        marker.setMap(map);
 
+        // 커스텀 오버레이 생성
+        const karaokeOverlay = new kakao.maps.CustomOverlay({
+            position: latlng,
+            content:
+                `<div class="container">
+            <div class="overlay">
+              <div class="title">${content}</div>
+              <div class="address">${address}</div>
+            </div>
+          </div>`,
+            xAnchor: 0.5,
+            yAnchor: 1.6,
+            clickable: true
+        })
 
-        var positions = data.map(el => {
-            return {
-                content: '<div class="title">' + el.placeName + '</div>',
-                latlng: new kakao.maps.LatLng(el.lat, el.lng),
-                removeable: false
-            }
-        });
+        // 마커에 클릭 이벤트 적용
+        kakao.maps.event.addListener(karaokeMarker, 'click', () => { makeClickListener(map, karaokeOverlay, karaokeMarker.Gb) });
 
-        for (var i = 0; i < positions.length; i++) {
+        // 전체 오버레이 제어를 위한 배열 할당
+        overlays.push(karaokeOverlay);
+    })
 
-            var marker = new kakao.maps.Marker({
-                map: map,
-                position: positions[i].latlng
-            });
-
-
-            var infowindow = new kakao.maps.InfoWindow({
-                content: positions[i].content
-            });
-
-            kakao.maps.event.addListener(marker, 'click', makeClickListener(map, marker, infowindow, positions[i].removeable));
+    // 클릭 이벤트 핸들러
+    const makeClickListener = (map, overlay, title) => {
+        if (!isOpenOverlays || isOpenOverlays !== title) {
+            overlays.forEach(el => { el.setMap(null) })
+            overlay.setMap(map);
+            isOpenOverlays = title;
+        } else if (isOpenOverlays === title) {
+            overlay.setMap(null);
+            isOpenOverlays = false;
         }
+    }
 
-        function makeClickListener(map, marker, infowindow, removeable) {
-            return function () {
-                if (!removeable) {
-                    infowindow.open(map, marker);
-                    removeable = true;
-                } else {
-                    infowindow.close();
-                    removeable = false;
-                }
-
-            };
-        }
-    </script>
+    // 오버레이, 마커 제외한 지도 터치 시 오버레이 꺼지도록 설정
+    kakao.maps.event.addListener(map, 'click', (event) => {
+        overlays.forEach(el => { el.setMap(null) });
+        isOpenOverlays = false;
+    });
+</script>
 </body>
 
 </html>
