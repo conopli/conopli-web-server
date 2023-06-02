@@ -78,7 +78,7 @@ public class UserMusicController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping
+    @PatchMapping("/contents")
     public ResponseEntity<?> modifyUserMusic(
             @RequestBody PlayListModifyRequestDto requestDto
             ) {
@@ -96,13 +96,12 @@ public class UserMusicController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{playListId}/{userMusicId}")
+    @PatchMapping
     public ResponseEntity<?> deleteUserMusic(
-            @PathVariable Long userMusicId,
-            @PathVariable Long playListId
+            @RequestBody PlayListModifyRequestDto requestDto
     ) {
         // Todo : User 플레이 리스트의 음악 삭제
-        userMusicService.deleteUserMusic(playListId, userMusicId);
+        userMusicService.deleteUserMusic(requestDto);
         return ResponseEntity.noContent().build();
     }
 }
