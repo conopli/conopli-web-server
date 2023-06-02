@@ -241,7 +241,7 @@ class UserMusicControllerTest {
         Gson gson = new Gson();
         String content = gson.toJson(request);
         given(userMusicService.createUserMusic(any(UserMusicRequestDto.class)))
-                .willReturn(ResponseDto.of(StubUtils.createUserMusicDto(1)));
+                .willReturn(ResponseDto.of(List.of(StubUtils.createUserMusicDto(1),StubUtils.createUserMusicDto(2))));
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .post("/api/user-music")
@@ -264,24 +264,24 @@ class UserMusicControllerTest {
                                         List.of(
                                                 fieldWithPath("userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                                 fieldWithPath("playListId").type(JsonFieldType.NUMBER).description("플레이 리스트 식별자"),
-                                                fieldWithPath("musicNum").type(JsonFieldType.STRING).description("곡 번호")
+                                                fieldWithPath("musicNum").type(JsonFieldType.ARRAY).description("곡 번호")
                                         )
 
                                 ),
                                 PayloadDocumentation.responseFields(
                                         List.of(
-                                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
-                                                fieldWithPath("data.userMusicId").type(JsonFieldType.STRING).description("저장 음악 식별자"),
-                                                fieldWithPath("data.playListId").type(JsonFieldType.STRING).description("플레이 리스트 식별자"),
-                                                fieldWithPath("data.musicId").type(JsonFieldType.STRING).description("음악 식별자"),
-                                                fieldWithPath("data.num").type(JsonFieldType.STRING).description("곡번호"),
-                                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
-                                                fieldWithPath("data.singer").type(JsonFieldType.STRING).description("가수"),
-                                                fieldWithPath("data.lyricist").type(JsonFieldType.STRING).description("작사"),
-                                                fieldWithPath("data.composer").type(JsonFieldType.STRING).description("작곡"),
-                                                fieldWithPath("data.youtubeUrl").type(JsonFieldType.STRING).description("YouTube URL"),
-                                                fieldWithPath("data.nation").type(JsonFieldType.STRING).description("국가"),
-                                                fieldWithPath("data.orderNum").type(JsonFieldType.NUMBER).description("저장 순서")
+                                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
+                                                fieldWithPath("data.[].userMusicId").type(JsonFieldType.STRING).description("저장 음악 식별자"),
+                                                fieldWithPath("data.[].playListId").type(JsonFieldType.STRING).description("플레이 리스트 식별자"),
+                                                fieldWithPath("data.[].musicId").type(JsonFieldType.STRING).description("음악 식별자"),
+                                                fieldWithPath("data.[].num").type(JsonFieldType.STRING).description("곡번호"),
+                                                fieldWithPath("data.[].title").type(JsonFieldType.STRING).description("제목"),
+                                                fieldWithPath("data.[].singer").type(JsonFieldType.STRING).description("가수"),
+                                                fieldWithPath("data.[].lyricist").type(JsonFieldType.STRING).description("작사"),
+                                                fieldWithPath("data.[].composer").type(JsonFieldType.STRING).description("작곡"),
+                                                fieldWithPath("data.[].youtubeUrl").type(JsonFieldType.STRING).description("YouTube URL"),
+                                                fieldWithPath("data.[].nation").type(JsonFieldType.STRING).description("국가"),
+                                                fieldWithPath("data.[].orderNum").type(JsonFieldType.NUMBER).description("저장 순서")
 
                                         ))));
     }
