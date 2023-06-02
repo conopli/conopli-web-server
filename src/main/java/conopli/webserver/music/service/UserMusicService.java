@@ -70,21 +70,23 @@ public class UserMusicService {
 
     public ResponseDto createUserMusic(UserMusicRequestDto requestDto) {
         PlayList findPlayList = playListRepository.findPlayListById(requestDto.getPlayListId());
-        HttpClientDto dto = httpClientService.generateSearchMusicByNumRequest(requestDto.getMusicNum());
-        UserMusic newUserMusic = UserMusic.of(dto);
-        long count = findPlayList.getUserMusic().stream()
-                .filter(music -> music.getNum().equals(newUserMusic.getNum()))
-                .count();
-        if (count == 0) {
+        ArrayList<UserMusic> userMusicList = new ArrayList<>();
+        for (String musicNum : requestDto.getMusicNum()) {
+            HttpClientDto dto = httpClientService.generateSearchMusicByNumRequest(musicNum);
+            UserMusic newUserMusic = UserMusic.of(dto);
             findPlayList.addUserMusic(newUserMusic);
             int countingOrder = findPlayList.getCountingOrder();
             newUserMusic.setOrderNum(countingOrder);
             findPlayList.setCountingOrder(countingOrder + 1);
             UserMusic saveUserMusic = userMusicRepository.saveUserMusic(newUserMusic);
-            return ResponseDto.of(UserMusicDto.of(saveUserMusic));
-        } else {
-            throw new ServiceLogicException(ErrorCode.EXIST_USER_MUSIC);
+            userMusicList.add(saveUserMusic);
         }
+        return ResponseDto.of(userMusicList.stream().map(UserMusicDto::of).toList());
+    }
+
+    public void duplicationUserMusic(Long playListId) {
+        PlayList findPlayList = playListRepository.findPlayListById(playListId);
+
     }
 
     public ResponseDto modifyPlayList(Long playListId, PlayListRequestDto requestDto) {
