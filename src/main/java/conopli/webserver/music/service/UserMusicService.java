@@ -124,8 +124,10 @@ public class UserMusicService {
         playListRepository.deletePlayListById(playListId);
     }
 
-    public void deleteUserMusic(Long playListId,Long userMusicId) {
-        userMusicRepository.deleteUserMusicByUserMusicId(userMusicId);
+    public void deleteUserMusic(PlayListModifyRequestDto requestDto) {
+        requestDto.getOrderList().forEach(id ->
+                userMusicRepository.deleteUserMusicByUserMusicId(Long.valueOf(id))
+        );
     }
 
 
