@@ -146,7 +146,7 @@ public class StubUtils {
         return UserMusicRequestDto.builder()
                 .userId(1L)
                 .playListId(2L)
-                .musicNum("4444")
+                .musicNum(List.of("4444","5555"))
                 .build();
     }
 
