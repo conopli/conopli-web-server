@@ -357,7 +357,7 @@ class UserMusicControllerTest {
                 .willReturn(response);
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
-                .patch("/api/user-music")
+                .patch("/api/user-music/contents")
                 .header("Authorization", token.getAccessToken())
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -437,17 +437,19 @@ class UserMusicControllerTest {
 
 
     @Test
-    @DisplayName("플레이 리스트 저장 음악 삭제 TEST")
+    @DisplayName("플레이 리스트 저장 음악 부분 삭제 TEST")
     @WithMockUser
     void deleteUserMusic() throws Exception {
         // Given
         Token token = createToken();
-        Long userMusicId = 1L;
-        Long playListId = 1L;
-        doNothing().when(userMusicService).deleteUserMusic(anyLong(),anyLong());
+        PlayListModifyRequestDto request = StubUtils.createPlayListModifyRequestDto();
+        Gson gson = new Gson();
+        String content = gson.toJson(request);
+        doNothing().when(userMusicService).deleteUserMusic(any(PlayListModifyRequestDto.class));
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
-                .delete("/api/user-music/{playListId}/{userMusicId}", playListId, userMusicId)
+                .patch("/api/user-music")
+                .content(content)
                 .header("Authorization", token.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -459,9 +461,12 @@ class UserMusicControllerTest {
                         MockMvcRestDocumentation.document("deleteUserMusic",
                                 ApiDocumentUtils.getRequestPreProcessor(),
                                 ApiDocumentUtils.getResponsePreProcessor(),
-                                RequestDocumentation.pathParameters(
-                                        parameterWithName("playListId").description("플레이 리스트 식별자"),
-                                        parameterWithName("userMusicId").description("저장 음악 식별자")
+                                PayloadDocumentation.requestFields(
+                                        List.of(
+                                                fieldWithPath("playListId").type(JsonFieldType.NUMBER).description("플레이 리스트 식별자"),
+                                                fieldWithPath("orderList").type(JsonFieldType.ARRAY).description("순서 수정 요청 값")
+                                        )
+
                                 ),
                                 HeaderDocumentation.requestHeaders(
                                         headerWithName("Authorization").description("AccessToken")
