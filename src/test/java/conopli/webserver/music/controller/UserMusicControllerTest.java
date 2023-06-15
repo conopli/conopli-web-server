@@ -464,7 +464,7 @@ class UserMusicControllerTest {
                                 PayloadDocumentation.requestFields(
                                         List.of(
                                                 fieldWithPath("playListId").type(JsonFieldType.NUMBER).description("플레이 리스트 식별자"),
-                                                fieldWithPath("orderList").type(JsonFieldType.ARRAY).description("순서 수정 요청 값")
+                                                fieldWithPath("orderList").type(JsonFieldType.ARRAY).description("삭제 대상 UserMusic 식별자")
                                         )
 
                                 ),

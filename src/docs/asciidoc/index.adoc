@@ -168,4 +168,4 @@ operation::deletePlayList[snippets='http-request,request-headers,path-parameters
 
 NOTE: 플레이 리스트에 저장된 음악 삭제 요청 API
 
-operation::deleteUserMusic[snippets='http-request,request-headers,path-parameters,http-response']
+operation::deleteUserMusic[snippets='http-request,request-headers,request-fields,http-response']

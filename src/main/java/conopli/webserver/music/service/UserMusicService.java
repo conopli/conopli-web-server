@@ -86,6 +86,7 @@ public class UserMusicService {
 
     public void duplicationUserMusic(Long playListId) {
         PlayList findPlayList = playListRepository.findPlayListById(playListId);
+        Set<UserMusic> userMusic = findPlayList.getUserMusic();
 
     }
 
