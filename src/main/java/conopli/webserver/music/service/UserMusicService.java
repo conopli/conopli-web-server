@@ -26,9 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,7 +85,35 @@ public class UserMusicService {
     public void duplicationUserMusic(Long playListId) {
         PlayList findPlayList = playListRepository.findPlayListById(playListId);
         Set<UserMusic> userMusic = findPlayList.getUserMusic();
-
+        List<String> userMusicNum =
+                userMusic.stream()
+                        .map(UserMusic::getNum)
+                        .toList();
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for (String num : userMusicNum) {
+            if (map.get(num) != null && map.get(num) >= 1) {
+                map.put(num, 2);
+            } else {
+                map.putIfAbsent(num, 1);
+            }
+        }
+        List<String> listNum = map.entrySet().stream()
+                .filter(e -> e.getValue() == 2)
+                .map(Map.Entry::getKey)
+                .toList();
+        ArrayList<UserMusic> musicList = new ArrayList<>();
+        ArrayList<UserMusic> deleteList = new ArrayList<>();
+        for (String num : listNum) {
+            userMusic.stream().filter(um -> um.getNum().equals(num))
+                    .forEach(musicList::add);
+        }
+        for (UserMusic music : musicList) {
+            boolean bool = deleteList.stream().anyMatch(m -> m.getNum().equals(music.getNum()));
+            if (!bool) {
+                deleteList.add(music);
+            }
+        }
+        deleteList.forEach(um -> userMusicRepository.deleteUserMusicByUserMusicId(um.getMusicId()));
     }
 
     public ResponseDto modifyPlayList(Long playListId, PlayListRequestDto requestDto) {
