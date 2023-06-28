@@ -89,29 +89,29 @@ public class UserMusicService {
                 userMusic.stream()
                         .map(UserMusic::getNum)
                         .toList();
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        Map<String, Integer> map = new HashMap<String, Integer>();
         for (String num : userMusicNum) {
             if (map.get(num) != null && map.get(num) >= 1) {
-                map.put(num, 2);
+                Integer count = map.get(num);
+                map.put(num, count+1);
             } else {
                 map.putIfAbsent(num, 1);
             }
         }
         List<String> listNum = map.entrySet().stream()
-                .filter(e -> e.getValue() == 2)
+                .filter(e -> e.getValue() >= 2)
                 .map(Map.Entry::getKey)
                 .toList();
-        ArrayList<UserMusic> musicList = new ArrayList<>();
-        ArrayList<UserMusic> deleteList = new ArrayList<>();
+        List<UserMusic> musicList = new ArrayList<>();
+        List<UserMusic> deleteList = new ArrayList<>();
         for (String num : listNum) {
             userMusic.stream().filter(um -> um.getNum().equals(num))
                     .forEach(musicList::add);
         }
         for (UserMusic music : musicList) {
             boolean bool = deleteList.stream().anyMatch(m -> m.getNum().equals(music.getNum()));
-            if (!bool) {
-                deleteList.add(music);
-            }
+            // TODO: 첫번째는 넣지않고 두번째 부터 add 할수 있도록 수정
+
         }
         deleteList.forEach(um -> userMusicRepository.deleteUserMusicByUserMusicId(um.getMusicId()));
     }
