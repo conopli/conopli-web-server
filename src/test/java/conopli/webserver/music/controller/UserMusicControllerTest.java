@@ -405,6 +405,36 @@ class UserMusicControllerTest {
 
 
     @Test
+    @DisplayName("특정 플레이 리스트 음악 중복 제거 TEST")
+    void duplicationUserMusic() throws Exception {
+        // Given
+        Token token = createToken();
+        Long playListId = 1L;
+        doNothing().when(userMusicService).duplicationUserMusic(anyLong());
+        // When
+        RequestBuilder result = RestDocumentationRequestBuilders
+                .patch("/api/user-music/duplication/{playListId}", playListId)
+                .header("Authorization", token.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName());
+        // Then
+        mockMvc.perform(result)
+                .andExpect(status().isOk())
+                .andDo(
+                        MockMvcRestDocumentation.document("deleteDuplicationPlayList",
+                                ApiDocumentUtils.getRequestPreProcessor(),
+                                ApiDocumentUtils.getResponsePreProcessor(),
+                                RequestDocumentation.pathParameters(
+                                        parameterWithName("playListId").description("플레이 리스트 식별자")
+                                ),
+                                HeaderDocumentation.requestHeaders(
+                                        headerWithName("Authorization").description("AccessToken")
+                                )
+                        ));
+    }
+
+    @Test
     @DisplayName("특정 플레이 리스트 삭제 TEST")
     @WithMockUser
     void deletePlayList() throws Exception {

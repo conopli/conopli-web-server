@@ -99,7 +99,6 @@ public class UserMusicController {
     public ResponseEntity<?> deletePlayList(
             @PathVariable Long playListId
     ) {
-        // Todo : User 특정 플레이 리스트 삭제
         userMusicService.deleteUserPlayList(playListId);
         return ResponseEntity.noContent().build();
     }
