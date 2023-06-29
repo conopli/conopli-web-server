@@ -103,15 +103,19 @@ public class UserMusicService {
                 .map(Map.Entry::getKey)
                 .toList();
         List<UserMusic> musicList = new ArrayList<>();
+        List<UserMusic> emptyList = new ArrayList<>();
         List<UserMusic> deleteList = new ArrayList<>();
         for (String num : listNum) {
             userMusic.stream().filter(um -> um.getNum().equals(num))
                     .forEach(musicList::add);
         }
         for (UserMusic music : musicList) {
-            boolean bool = deleteList.stream().anyMatch(m -> m.getNum().equals(music.getNum()));
-            // TODO: 첫번째는 넣지않고 두번째 부터 add 할수 있도록 수정
-
+            boolean emptyBool = emptyList.stream().anyMatch(um -> um.getNum().equals(music.getNum()));
+            if (!emptyBool) {
+                emptyList.add(music);
+            } else {
+                deleteList.add(music);
+            }
         }
         deleteList.forEach(um -> userMusicRepository.deleteUserMusicByUserMusicId(um.getMusicId()));
     }

@@ -91,9 +91,8 @@ public class UserMusicController {
     public ResponseEntity<?> duplicationUserMusic(
             @PathVariable Long playListId
     ) {
-        // Todo : User 플레이 리스트의 중복 음악 정리
         userMusicService.duplicationUserMusic(playListId);
-        return null;
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/playlist/{playListId}")
