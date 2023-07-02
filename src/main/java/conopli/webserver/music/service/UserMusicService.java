@@ -26,9 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,21 +68,56 @@ public class UserMusicService {
 
     public ResponseDto createUserMusic(UserMusicRequestDto requestDto) {
         PlayList findPlayList = playListRepository.findPlayListById(requestDto.getPlayListId());
-        HttpClientDto dto = httpClientService.generateSearchMusicByNumRequest(requestDto.getMusicNum());
-        UserMusic newUserMusic = UserMusic.of(dto);
-        long count = findPlayList.getUserMusic().stream()
-                .filter(music -> music.getNum().equals(newUserMusic.getNum()))
-                .count();
-        if (count == 0) {
+        ArrayList<UserMusic> userMusicList = new ArrayList<>();
+        for (String musicNum : requestDto.getMusicNum()) {
+            HttpClientDto dto = httpClientService.generateSearchMusicByNumRequest(musicNum);
+            UserMusic newUserMusic = UserMusic.of(dto);
             findPlayList.addUserMusic(newUserMusic);
             int countingOrder = findPlayList.getCountingOrder();
             newUserMusic.setOrderNum(countingOrder);
             findPlayList.setCountingOrder(countingOrder + 1);
             UserMusic saveUserMusic = userMusicRepository.saveUserMusic(newUserMusic);
-            return ResponseDto.of(UserMusicDto.of(saveUserMusic));
-        } else {
-            throw new ServiceLogicException(ErrorCode.EXIST_USER_MUSIC);
+            userMusicList.add(saveUserMusic);
         }
+        return ResponseDto.of(userMusicList.stream().map(UserMusicDto::of).toList());
+    }
+
+    public void duplicationUserMusic(Long playListId) {
+        PlayList findPlayList = playListRepository.findPlayListById(playListId);
+        Set<UserMusic> userMusic = findPlayList.getUserMusic();
+        List<String> userMusicNum =
+                userMusic.stream()
+                        .map(UserMusic::getNum)
+                        .toList();
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (String num : userMusicNum) {
+            if (map.get(num) != null && map.get(num) >= 1) {
+                Integer count = map.get(num);
+                map.put(num, count+1);
+            } else {
+                map.putIfAbsent(num, 1);
+            }
+        }
+        List<String> listNum = map.entrySet().stream()
+                .filter(e -> e.getValue() >= 2)
+                .map(Map.Entry::getKey)
+                .toList();
+        List<UserMusic> musicList = new ArrayList<>();
+        List<UserMusic> emptyList = new ArrayList<>();
+        List<UserMusic> deleteList = new ArrayList<>();
+        for (String num : listNum) {
+            userMusic.stream().filter(um -> um.getNum().equals(num))
+                    .forEach(musicList::add);
+        }
+        for (UserMusic music : musicList) {
+            boolean emptyBool = emptyList.stream().anyMatch(um -> um.getNum().equals(music.getNum()));
+            if (!emptyBool) {
+                emptyList.add(music);
+            } else {
+                deleteList.add(music);
+            }
+        }
+        deleteList.forEach(um -> userMusicRepository.deleteUserMusicByUserMusicId(um.getMusicId()));
     }
 
     public ResponseDto modifyPlayList(Long playListId, PlayListRequestDto requestDto) {
@@ -124,8 +157,10 @@ public class UserMusicService {
         playListRepository.deletePlayListById(playListId);
     }
 
-    public void deleteUserMusic(Long playListId,Long userMusicId) {
-        userMusicRepository.deleteUserMusicByUserMusicId(userMusicId);
+    public void deleteUserMusic(PlayListModifyRequestDto requestDto) {
+        requestDto.getOrderList().forEach(id ->
+                userMusicRepository.deleteUserMusicByUserMusicId(Long.valueOf(id))
+        );
     }
 
 

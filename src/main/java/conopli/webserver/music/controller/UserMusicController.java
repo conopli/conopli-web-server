@@ -78,7 +78,7 @@ public class UserMusicController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping
+    @PatchMapping("/contents")
     public ResponseEntity<?> modifyUserMusic(
             @RequestBody PlayListModifyRequestDto requestDto
             ) {
@@ -87,22 +87,28 @@ public class UserMusicController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/duplication/{playListId}")
+    public ResponseEntity<?> duplicationUserMusic(
+            @PathVariable Long playListId
+    ) {
+        userMusicService.duplicationUserMusic(playListId);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/playlist/{playListId}")
     public ResponseEntity<?> deletePlayList(
             @PathVariable Long playListId
     ) {
-        // Todo : User 특정 플레이 리스트 삭제
         userMusicService.deleteUserPlayList(playListId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{playListId}/{userMusicId}")
+    @PatchMapping
     public ResponseEntity<?> deleteUserMusic(
-            @PathVariable Long userMusicId,
-            @PathVariable Long playListId
+            @RequestBody PlayListModifyRequestDto requestDto
     ) {
         // Todo : User 플레이 리스트의 음악 삭제
-        userMusicService.deleteUserMusic(playListId, userMusicId);
+        userMusicService.deleteUserMusic(requestDto);
         return ResponseEntity.noContent().build();
     }
 }
