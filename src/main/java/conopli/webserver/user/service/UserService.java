@@ -5,6 +5,7 @@ import conopli.webserver.constant.ErrorCode;
 import conopli.webserver.constant.LoginType;
 import conopli.webserver.constant.UserStatus;
 import conopli.webserver.exception.ServiceLogicException;
+import conopli.webserver.playlist.entity.PlayList;
 import conopli.webserver.user.dto.UserDto;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.repository.UserRepository;
@@ -45,12 +46,18 @@ public class UserService {
             }
         } catch (ServiceLogicException e) {
             if (e.getErrorCode().equals(ErrorCode.NOT_FOUND_USER)) {
+                PlayList playList = PlayList.builder()
+                        .emoji("128561")
+                        .color("18")
+                        .title("기본 플레이 리스트")
+                        .build();
                 User user = User.builder()
                         .userStatus(UserStatus.VERIFIED)
                         .email(email)
                         .loginType(LoginType.valueOf(loginType.toUpperCase()))
                         .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
                         .build();
+                user.addPlayList(playList);
                 return UserDto.of(userRepository.saveUser(user));
             } else {
                 throw e;
