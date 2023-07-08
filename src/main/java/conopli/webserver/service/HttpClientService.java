@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +40,7 @@ public class HttpClientService {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public HttpClientPageDto generateSearchMusicRequest(SearchDto dto) {
+        verifySearchDto(dto);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchRequestUrl(dto));
             httpGet.setHeader("Content-type", "application/json");
@@ -46,7 +48,7 @@ public class HttpClientService {
             HttpClientPageDto execute = (HttpClientPageDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
         } catch (IOException e) {
-            throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
+            throw new ServiceLogicException(ErrorCode.DOMAIN_SERVER_HTTP_REQUEST_IO_ERROR);
         }
     }
 
@@ -58,7 +60,7 @@ public class HttpClientService {
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
         } catch (IOException e) {
-            throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
+            throw new ServiceLogicException(ErrorCode.DOMAIN_SERVER_HTTP_REQUEST_IO_ERROR);
         }
     }
 
@@ -70,7 +72,7 @@ public class HttpClientService {
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
         } catch (IOException e) {
-            throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
+            throw new ServiceLogicException(ErrorCode.DOMAIN_SERVER_HTTP_REQUEST_IO_ERROR);
         }
     }
 
@@ -82,7 +84,7 @@ public class HttpClientService {
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
         } catch (IOException e) {
-            throw new ServiceLogicException(ErrorCode.HTTP_REQUEST_IO_ERROR);
+            throw new ServiceLogicException(ErrorCode.DOMAIN_SERVER_HTTP_REQUEST_IO_ERROR);
         }
     }
 
@@ -149,6 +151,24 @@ public class HttpClientService {
                 throw new ClientProtocolException("Unexpected response status: " + status);
             }
         };
+    }
+
+    private void verifySearchDto(SearchDto dto) {
+        List<Integer> searchType = List.of(1, 2, 4, 8, 16);
+        List<String> searchNation = List.of("KOR", "ENG", "JPN");
+
+        boolean searchTypeBol = searchType.contains(dto.getSearchType());
+        boolean searchNationBol = searchNation.contains(dto.getSearchNation());
+        if (!searchTypeBol || !searchNationBol) {
+            throw new ServiceLogicException(ErrorCode.ARGUMENT_MISMATCH_BAD_REQUEST);
+        }
+    }
+
+    private void verifyPopularRequestDto(PopularRequestDto dto) {
+        List<Integer> searchType = List.of(1, 2, 3);
+        if (!searchType.contains(dto.getSearchType())) {
+            throw new ServiceLogicException(ErrorCode.ARGUMENT_MISMATCH_BAD_REQUEST);
+        }
     }
 
 
