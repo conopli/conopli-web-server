@@ -2,6 +2,8 @@ package conopli.webserver.auth.service;
 
 import conopli.webserver.auth.dto.LoginDto;
 import conopli.webserver.auth.token.JwtTokenizer;
+import conopli.webserver.constant.ErrorCode;
+import conopli.webserver.exception.ServiceLogicException;
 import conopli.webserver.service.HttpClientService;
 import conopli.webserver.user.dto.UserDto;
 import conopli.webserver.user.entity.User;
@@ -35,10 +37,18 @@ public class AuthService {
             HttpServletResponse response
     ) {
         String email = httpClientService.generateLoginRequest(loginDto);
-        UserDto user = userService.createOrVerifiedUserByEmailAndLoginType(email, loginDto.getLoginType());
-        jwtTokenizer.delegateToken(user.getEmail(), response);
-        response.setHeader("userId", String.valueOf(user.getUserId()));
-        response.setHeader("userStatus", user.getUserStatus());
+        try {
+            UserDto user = userService.createOrVerifiedUserByEmailAndLoginType(email, loginDto.getLoginType());
+            jwtTokenizer.delegateToken(user.getEmail(), response);
+            response.setHeader("userId", String.valueOf(user.getUserId()));
+            response.setHeader("userStatus", user.getUserStatus());
+        } catch (ServiceLogicException e) {
+            if (e.getErrorCode().equals(ErrorCode.EXIST_USER)) {
+                User user = userService.verifiedUserByEmail(email);
+                response.setHeader("userLoginType", user.getLoginType().name());
+            }
+            throw e;
+        }
     }
 
     public void verifyUser(
