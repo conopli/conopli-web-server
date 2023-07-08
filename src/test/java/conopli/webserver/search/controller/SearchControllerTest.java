@@ -11,6 +11,7 @@ import conopli.webserver.search.dto.SearchDto;
 import conopli.webserver.service.HttpClientService;
 import conopli.webserver.utils.ApiDocumentUtils;
 import conopli.webserver.utils.StubUtils;
+import conopli.webserver.webhook.WebHookService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({JwtAuthorityUtils.class,
         JwtTokenizer.class,
         HttpClientService.class,
+        WebHookService.class,
         SecurityConfig.class})
 class SearchControllerTest {
 

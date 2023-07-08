@@ -20,6 +20,7 @@ import conopli.webserver.user.entity.User;
 import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
 import conopli.webserver.utils.StubUtils;
+import conopli.webserver.webhook.WebHookService;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -68,6 +69,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({JwtAuthorityUtils.class,
         JwtTokenizer.class,
         AuthService.class,
+        WebHookService.class,
+        WebHookService.class,
         SecurityConfig.class})
 class AuthControllerTest {
 
