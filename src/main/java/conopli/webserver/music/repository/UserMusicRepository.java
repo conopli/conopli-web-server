@@ -19,5 +19,7 @@ public interface UserMusicRepository {
 
     void deleteUserMusicByUserMusicId(Long userMusicId);
 
+    void deleteUserMusicByIterate(List<Long> userMusicIdList);
+
     void deleteAll(List<UserMusic> list);
 }
