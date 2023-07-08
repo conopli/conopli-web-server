@@ -19,7 +19,8 @@ public enum ErrorCode {
     TOKEN_NOT_NULL(404, "TOKEN_NOT_NULL"),
     EXPIRED_REFRESH_TOKEN(401,"EXPIRED REFRESH TOKEN"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error" ),
-    HTTP_REQUEST_IO_ERROR(500, "Generator Server Request I/O Exception" ),
+    DOMAIN_SERVER_HTTP_REQUEST_IO_ERROR(400, "Music Domain Server Request I/O Error(Bad Request)" ),
+    HTTP_REQUEST_IO_ERROR(400, "OAuth Server Request I/O Error(Bad Request)" ),
     DATA_ACCESS_ERROR(500, "Data Access Error"),
     NOT_IMPLEMENTED(501,"NOT IMPLEMENTED");
 

@@ -86,7 +86,7 @@ operation::deleteUser[snippets='http-request,request-headers,path-parameters,htt
 
 NOTE: 음악 검색 요청 API
 
-operation::searchMusic[snippets='http-request,request-body,request-fields,http-response,response-body,response-fields']
+operation::searchMusic[snippets='http-request,query-parameters,http-response,response-fields']
 
 
 [[Popular-Music]]
@@ -94,7 +94,7 @@ operation::searchMusic[snippets='http-request,request-body,request-fields,http-r
 
 NOTE: 인기곡 검색 요청 API
 
-operation::popularMusic[snippets='http-request,request-body,request-fields,http-response,response-body,response-fields']
+operation::popularMusic[snippets='http-request,query-parameters,http-response,response-fields']
 
 
 [[New-Music]]
@@ -102,7 +102,7 @@ operation::popularMusic[snippets='http-request,request-body,request-fields,http-
 
 NOTE: 신곡 리스트 조회 요청 API
 
-operation::newMusic[snippets='http-request,http-response,response-body,response-fields']
+operation::newMusic[snippets='http-request,http-response,response-fields']
 
 
 

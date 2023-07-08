@@ -7,8 +7,13 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class SearchDto {
+
     int searchType;
+
     String searchKeyWord;
+
     String searchNation;
+
     int page;
+
 }
