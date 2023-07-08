@@ -49,7 +49,7 @@ public class UserMusic extends Auditable {
     private int orderNum;
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private PlayList playList;
 
     public void addPlayList(PlayList playList) {

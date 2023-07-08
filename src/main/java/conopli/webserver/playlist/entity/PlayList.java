@@ -42,7 +42,7 @@ public class PlayList extends Auditable {
 
     @ToString.Exclude
     @OrderBy("userMusicId")
-    @OneToMany(mappedBy = "playList", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "playList", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter
     private Set<UserMusic> userMusic = new LinkedHashSet<>();
 

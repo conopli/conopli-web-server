@@ -8,6 +8,7 @@ import conopli.webserver.music.repository.UserMusicRepository;
 import conopli.webserver.playlist.entity.PlayList;
 import conopli.webserver.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class UserMusicRepositoryImpl implements UserMusicRepository {
 
     private final UserMusicJpaRepository jpaRepository;
@@ -46,6 +48,12 @@ public class UserMusicRepositoryImpl implements UserMusicRepository {
     @Override
     public void deleteUserMusicByUserMusicId(Long userMusicId) {
         jpaRepository.deleteById(userMusicId);
+    }
+
+    @Override
+    public void deleteUserMusicByIterate(List<Long> userMusicIdList) {
+        log.info("Delete User Music = {}", userMusicIdList);
+        jpaRepository.deleteAllById(userMusicIdList);
     }
 
     @Override
