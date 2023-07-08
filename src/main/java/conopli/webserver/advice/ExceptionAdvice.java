@@ -81,8 +81,8 @@ public class ExceptionAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse exceptionHandler(Exception e) {
-//        WebHookDto dto = getServerErrorWebHookDto(e);
-//        webHookService.callEvent(dto);
+        WebHookDto dto = getServerErrorWebHookDto(e);
+        webHookService.callEvent(dto);
         return ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 

@@ -40,9 +40,9 @@ public class HttpClientService {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public HttpClientPageDto generateSearchMusicRequest(SearchDto dto) {
-        verifySearchDto(dto);
+        SearchDto searchDto = verifySearchDto(dto);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchRequestUrl(dto));
+            HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchRequestUrl(searchDto));
             httpGet.setHeader("Content-type", "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientPageDto execute = (HttpClientPageDto) httpclient.execute(httpGet, getResponseHandler());
@@ -153,7 +153,7 @@ public class HttpClientService {
         };
     }
 
-    private void verifySearchDto(SearchDto dto) {
+    private SearchDto verifySearchDto(SearchDto dto) {
         List<Integer> searchType = List.of(1, 2, 4, 8, 16);
         List<String> searchNation = List.of("KOR", "ENG", "JPN");
 
@@ -162,6 +162,10 @@ public class HttpClientService {
         if (!searchTypeBol || !searchNationBol) {
             throw new ServiceLogicException(ErrorCode.ARGUMENT_MISMATCH_BAD_REQUEST);
         }
+        String searchKeyWord = dto.getSearchKeyWord();
+        String newKeyWord = searchKeyWord.replaceAll(" ", "%20");
+        dto.setSearchKeyWord(newKeyWord);
+        return dto;
     }
 
     private void verifyPopularRequestDto(PopularRequestDto dto) {
