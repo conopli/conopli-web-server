@@ -117,7 +117,7 @@ public class UserMusicService {
                 deleteList.add(music);
             }
         }
-        deleteList.forEach(um -> userMusicRepository.deleteUserMusicByUserMusicId(um.getMusicId()));
+        deleteList.forEach(userMusic::remove);
     }
 
     public ResponseDto modifyPlayList(Long playListId, PlayListRequestDto requestDto) {
