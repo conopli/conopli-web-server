@@ -12,6 +12,7 @@ import conopli.webserver.user.entity.User;
 import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
 import conopli.webserver.utils.StubUtils;
+import conopli.webserver.webhook.WebHookService;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("local")
 @Import({JwtAuthorityUtils.class,
         JwtTokenizer.class,
+        WebHookService.class,
         SecurityConfig.class})
 class UserControllerTest {
 
