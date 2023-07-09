@@ -90,7 +90,7 @@ public class StubUtils {
     public static PlayListModifyRequestDto createPlayListModifyRequestDto() {
         return PlayListModifyRequestDto.builder()
                 .playListId(1L)
-                .orderList(List.of(2, 1))
+                .orderList(List.of(2, 1,0))
                 .build();
     }
 

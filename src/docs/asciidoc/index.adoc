@@ -163,16 +163,23 @@ NOTE: 플레이 리스트 중복 음악 삭제 요청 API
 
 operation::deleteDuplicationPlayList[snippets='http-request,request-headers,path-parameters,http-response']
 
+[[User-Playlist-OrderNum-Reset-Patch]]
+=== 4.8 플레이 리스트 OrderNum 초기화
+
+NOTE: 플레이 리스트의 UserMusic OrderNum 필드를 정렬하여 Index 값으로 초기화 요청 API
+
+operation::resetOrderNumPlayList[snippets='http-request,request-headers,path-parameters,http-response']
+
 
 [[User-Playlist-Delete]]
-=== 4.8 플레이 리스트 삭제
+=== 4.9 플레이 리스트 삭제
 
 NOTE: 플레이 리스트 삭제 요청 API
 
 operation::deletePlayList[snippets='http-request,request-headers,path-parameters,http-response']
 
 [[User-Playlist-Music-Delete]]
-=== 4.9 플레이 리스트의 저장 음악 삭제
+=== 4.10 플레이 리스트의 저장 음악 삭제
 
 NOTE: 플레이 리스트에 저장된 음악 삭제 요청 API
 

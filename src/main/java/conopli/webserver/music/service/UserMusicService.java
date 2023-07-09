@@ -1,10 +1,8 @@
 package conopli.webserver.music.service;
 
-import conopli.webserver.constant.ErrorCode;
 import conopli.webserver.dto.HttpClientDto;
 import conopli.webserver.dto.PageResponseDto;
 import conopli.webserver.dto.ResponseDto;
-import conopli.webserver.exception.ServiceLogicException;
 import conopli.webserver.music.dto.UserMusicDto;
 import conopli.webserver.music.dto.UserMusicRequestDto;
 import conopli.webserver.music.entity.UserMusic;
@@ -73,7 +71,7 @@ public class UserMusicService {
             HttpClientDto dto = httpClientService.generateSearchMusicByNumRequest(musicNum);
             UserMusic newUserMusic = UserMusic.of(dto);
             findPlayList.addUserMusic(newUserMusic);
-            int countingOrder = findPlayList.getCountingOrder();
+            int countingOrder = resetOrderNumaUtil(findPlayList);
             newUserMusic.setOrderNum(countingOrder);
             findPlayList.setCountingOrder(countingOrder + 1);
             UserMusic saveUserMusic = userMusicRepository.saveUserMusic(newUserMusic);
@@ -83,41 +81,30 @@ public class UserMusicService {
     }
 
     public void duplicationUserMusic(Long playListId) {
-        PlayList findPlayList = playListRepository.findPlayListById(playListId);
-        Set<UserMusic> userMusic = findPlayList.getUserMusic();
-        List<String> userMusicNum =
-                userMusic.stream()
-                        .map(UserMusic::getNum)
-                        .toList();
-        Map<String, Integer> map = new HashMap<String, Integer>();
-        for (String num : userMusicNum) {
-            if (map.get(num) != null && map.get(num) >= 1) {
-                Integer count = map.get(num);
-                map.put(num, count+1);
-            } else {
-                map.putIfAbsent(num, 1);
-            }
-        }
-        List<String> listNum = map.entrySet().stream()
-                .filter(e -> e.getValue() >= 2)
-                .map(Map.Entry::getKey)
-                .toList();
-        List<UserMusic> musicList = new ArrayList<>();
-        List<UserMusic> emptyList = new ArrayList<>();
+        PlayList playList = playListRepository.findPlayListById(playListId);
+        Set<UserMusic> userMusic = playList.getUserMusic();
+        List<UserMusic> duplicatedMusic = userMusic.stream()
+                .collect(Collectors.groupingBy(UserMusic::getNum))
+                .values()
+                .stream()
+                .filter(musicList -> musicList.size() > 1)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        List<UserMusic> deleteList = getDeleteUserMusicList(duplicatedMusic);
+        deleteList.forEach(userMusic::remove);
+        resetOrderNumaUtil(playList);
+    }
+
+    private List<UserMusic> getDeleteUserMusicList(List<UserMusic> musicList) {
+        // 중복되는 UserMusic 리스트 전체를 받아 첫번째 UserMusic을 제외한 나머지 UserMusic List를 반환한다
         List<UserMusic> deleteList = new ArrayList<>();
-        for (String num : listNum) {
-            userMusic.stream().filter(um -> um.getNum().equals(num))
-                    .forEach(musicList::add);
-        }
-        for (UserMusic music : musicList) {
-            boolean emptyBool = emptyList.stream().anyMatch(um -> um.getNum().equals(music.getNum()));
-            if (!emptyBool) {
-                emptyList.add(music);
-            } else {
+        Set<String> uniqueNums = new HashSet<>();
+        musicList.forEach(music -> {
+            if (!uniqueNums.add(music.getNum())) {
                 deleteList.add(music);
             }
-        }
-        deleteList.forEach(userMusic::remove);
+        });
+        return deleteList;
     }
 
     public ResponseDto modifyPlayList(Long playListId, PlayListRequestDto requestDto) {
@@ -128,28 +115,18 @@ public class UserMusicService {
 
     public PageResponseDto modifyUserMusic(PlayListModifyRequestDto requestDto) {
         Long playListId = requestDto.getPlayListId();
-        PlayList findPlayList = playListRepository.findPlayListById(playListId);
-        Set<UserMusic> userMusic = findPlayList.getUserMusic();
-        // 2,4,5,6,7,1,3
-        List<Integer> orderList = requestDto.getOrderList();
-        List<UserMusic> setList = new ArrayList<>();
-        for (int i = 0; i < orderList.size(); i++) {
-            Integer orderNum = orderList.get(i);
-            UserMusic findUserMusic = userMusic.stream()
-                    .filter(a -> a.getOrderNum() == orderNum)
-                    .findFirst()
-                    .orElseThrow(() -> new ServiceLogicException(ErrorCode.NOT_FOUND_USER_MUSIC));
-            setList.add(findUserMusic);
-        }
-        for (int i = 0; i < setList.size(); i++) {
-            UserMusic findUserMusic = setList.get(i);
-            findUserMusic.setOrderNum(i);
-        }
+        PlayList playList = playListRepository.findPlayListById(playListId);
+        playList.getUserMusic()
+                .forEach(music ->
+                        music.setOrderNum(requestDto.getOrderList().indexOf(music.getOrderNum()))
+                );
         Pageable pageable = PageRequest.of(0, 10, Sort.by("orderNum").ascending());
-        Page<UserMusic> findList = userMusicRepository.findUserMusicByPlayList(findPlayList, pageable);
-        List<UserMusicDto> responseList = findList.getContent().stream()
+        Page<UserMusic> findList = userMusicRepository.findUserMusicByPlayList(playList, pageable);
+        List<UserMusicDto> responseList = findList.getContent()
+                .stream()
                 .map(UserMusicDto::of)
                 .collect(Collectors.toList());
+
         return PageResponseDto.of(responseList, findList);
     }
 
@@ -161,6 +138,19 @@ public class UserMusicService {
         requestDto.getOrderList().forEach(id ->
                 userMusicRepository.deleteUserMusicByUserMusicId(Long.valueOf(id))
         );
+    }
+
+    public void resetOrderNum(Long playListId) {
+        PlayList findPlayList = playListRepository.findPlayListById(playListId);
+        findPlayList.setCountingOrder(resetOrderNumaUtil(findPlayList));
+    }
+
+    private Integer resetOrderNumaUtil(PlayList playList) {
+        List<UserMusic> list = playList.getUserMusic().stream()
+                .sorted(Comparator.comparingInt(UserMusic::getOrderNum))
+                .toList();
+        list.forEach(m -> m.setOrderNum(list.indexOf(m)));
+        return list.size();
     }
 
 
