@@ -350,9 +350,10 @@ class UserMusicControllerTest {
         PlayListModifyRequestDto request = StubUtils.createPlayListModifyRequestDto();
         Gson gson = new Gson();
         String content = gson.toJson(request);
-        UserMusicDto dto1 = StubUtils.createUserMusicDto(1);
-        UserMusicDto dto2 = StubUtils.createUserMusicDto(2);
-        List<UserMusicDto> dtoList = List.of(dto1, dto2);
+        UserMusicDto dto1 = StubUtils.createUserMusicDto(0);
+        UserMusicDto dto2 = StubUtils.createUserMusicDto(1);
+        UserMusicDto dto3 = StubUtils.createUserMusicDto(2);
+        List<UserMusicDto> dtoList = List.of(dto1, dto2, dto3);
         Page page = new PageImpl(dtoList);
         PageResponseDto response = PageResponseDto.of(dtoList, page);
         given(userMusicService.modifyUserMusic(any(PlayListModifyRequestDto.class)))
