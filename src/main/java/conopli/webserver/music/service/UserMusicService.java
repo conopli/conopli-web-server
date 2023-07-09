@@ -1,10 +1,8 @@
 package conopli.webserver.music.service;
 
-import conopli.webserver.constant.ErrorCode;
 import conopli.webserver.dto.HttpClientDto;
 import conopli.webserver.dto.PageResponseDto;
 import conopli.webserver.dto.ResponseDto;
-import conopli.webserver.exception.ServiceLogicException;
 import conopli.webserver.music.dto.UserMusicDto;
 import conopli.webserver.music.dto.UserMusicRequestDto;
 import conopli.webserver.music.entity.UserMusic;
@@ -73,7 +71,7 @@ public class UserMusicService {
             HttpClientDto dto = httpClientService.generateSearchMusicByNumRequest(musicNum);
             UserMusic newUserMusic = UserMusic.of(dto);
             findPlayList.addUserMusic(newUserMusic);
-            int countingOrder = findPlayList.getCountingOrder();
+            int countingOrder = resetOrderNumaUtil(findPlayList);
             newUserMusic.setOrderNum(countingOrder);
             findPlayList.setCountingOrder(countingOrder + 1);
             UserMusic saveUserMusic = userMusicRepository.saveUserMusic(newUserMusic);
@@ -94,6 +92,7 @@ public class UserMusicService {
                 .collect(Collectors.toList());
         List<UserMusic> deleteList = getDeleteUserMusicList(duplicatedMusic);
         deleteList.forEach(userMusic::remove);
+        resetOrderNumaUtil(playList);
     }
 
     private List<UserMusic> getDeleteUserMusicList(List<UserMusic> musicList) {
@@ -139,6 +138,19 @@ public class UserMusicService {
         requestDto.getOrderList().forEach(id ->
                 userMusicRepository.deleteUserMusicByUserMusicId(Long.valueOf(id))
         );
+    }
+
+    public void resetOrderNum(Long playListId) {
+        PlayList findPlayList = playListRepository.findPlayListById(playListId);
+        findPlayList.setCountingOrder(resetOrderNumaUtil(findPlayList));
+    }
+
+    private Integer resetOrderNumaUtil(PlayList playList) {
+        List<UserMusic> list = playList.getUserMusic().stream()
+                .sorted(Comparator.comparingInt(UserMusic::getOrderNum))
+                .toList();
+        list.forEach(m -> m.setOrderNum(list.indexOf(m)));
+        return list.size();
     }
 
 
