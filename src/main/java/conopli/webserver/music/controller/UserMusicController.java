@@ -81,7 +81,7 @@ public class UserMusicController {
     @PatchMapping("/contents")
     public ResponseEntity<?> modifyUserMusic(
             @RequestBody PlayListModifyRequestDto requestDto
-            ) {
+    ) {
         // Todo : User 플레이 리스트의 음악 수정
         PageResponseDto response = userMusicService.modifyUserMusic(requestDto);
         return ResponseEntity.ok(response);
@@ -110,5 +110,13 @@ public class UserMusicController {
         // Todo : User 플레이 리스트의 음악 삭제
         userMusicService.deleteUserMusic(requestDto);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/initial/{playListId}")
+    public ResponseEntity<?> initialPlayList(
+            @PathVariable Long playListId
+    ) {
+        userMusicService.resetOrderNum(playListId);
+        return ResponseEntity.ok().build();
     }
 }
