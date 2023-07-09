@@ -17,7 +17,7 @@ public class HomeController {
     @GetMapping
     public ModelAndView callDocs() {
         return new ModelAndView(
-                "docs/index"
+                "docs/index.html"
         );
     }
 }
