@@ -43,7 +43,7 @@ public class AuthService {
             response.setHeader("userId", String.valueOf(user.getUserId()));
             response.setHeader("userStatus", user.getUserStatus());
         } catch (ServiceLogicException e) {
-            if (e.getErrorCode().equals(ErrorCode.EXIST_USER)) {
+            if (e.getErrorCode().equals(ErrorCode.EXIST_USER) || e.getErrorCode().equals(ErrorCode.INACTIVE_USER)) {
                 User user = userService.verifiedUserByEmail(email);
                 response.setHeader("userLoginType", user.getLoginType().name());
             }

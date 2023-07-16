@@ -39,10 +39,12 @@ public class UserService {
     public UserDto createOrVerifiedUserByEmailAndLoginType(String email, String loginType) {
         try {
             User findUser = userRepository.findUserByEmail(email);
-            if (findUser.getLoginType().equals(LoginType.valueOf(loginType.toUpperCase()))) {
-                return UserDto.of(findUser);
-            } else {
+            if (findUser.getUserStatus().equals(UserStatus.INACTIVE)) {
+                throw new ServiceLogicException(ErrorCode.INACTIVE_USER);
+            } else if (!findUser.getLoginType().equals(LoginType.valueOf(loginType.toUpperCase()))) {
                 throw new ServiceLogicException(ErrorCode.EXIST_USER);
+            } else {
+                return UserDto.of(findUser);
             }
         } catch (ServiceLogicException e) {
             if (e.getErrorCode().equals(ErrorCode.NOT_FOUND_USER)) {
