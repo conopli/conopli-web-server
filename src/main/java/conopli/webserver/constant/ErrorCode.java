@@ -10,6 +10,7 @@ public enum ErrorCode {
     EXIST_USER_MUSIC(400, "Already Exist User Music"),
     ARGUMENT_MISMATCH_BAD_REQUEST(400, "Argument Mismatch Bad Request" ),
     ACCESS_DENIED(403, "ACCESS DENIED"),
+    INACTIVE_USER(403, "Inactive User"),
     NOT_FOUND(404, "NOT FOUND"),
     NOT_FOUND_REQUEST_URL(404, "Not Found Request Url "),
     NOT_FOUND_USER(404, "Not Found User"),
