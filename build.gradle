@@ -99,7 +99,6 @@ build {
 
 // Querydsl 설정
 def generated='src/main/generated'
-def docs='src/main/resources/static/docs'
 
 // querydsl QClass 파일 생성 위치를 지정
 tasks.withType(JavaCompile) {
@@ -115,7 +114,6 @@ sourceSets {
 // gradle clean 시에 QClass 디렉토리 삭제
 clean {
 	delete file(generated)
-	delete file(docs)
 }
 
 jar {
