@@ -34,6 +34,7 @@ public class User extends Auditable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Setter
     private UserStatus userStatus;
 
     @ElementCollection(fetch = FetchType.EAGER)
