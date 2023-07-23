@@ -144,6 +144,102 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("로그인 TEST - User Exist")
+    @WithMockUser
+    void loginExist() throws Exception {
+        // Given
+        Token token = createToken();
+        LoginDto loginDto = StubUtils.createLoginDto();
+        Gson gson = new Gson();
+        String content = gson.toJson(loginDto);
+        User user = User.builder()
+                .userId(1L)
+                .userStatus(UserStatus.VERIFIED)
+                .email("test@test.com")
+                .loginType(LoginType.valueOf(loginDto.getLoginType()))
+                .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
+                .build();
+        given(httpClientService.generateLoginRequest(any(LoginDto.class))).willReturn(user.getEmail());
+        given(userService.createOrVerifiedUserByEmailAndLoginType(anyString(), anyString()))
+                .willThrow(new ServiceLogicException(ErrorCode.EXIST_USER));
+        given(userService.verifiedUserByEmail(anyString()))
+                .willReturn(user);
+        // When
+        RequestBuilder result = RestDocumentationRequestBuilders
+                .post("/api/auth/login")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName());
+        // Then
+        mockMvc.perform(result)
+                .andExpect(status().is4xxClientError())
+                .andDo(
+                        MockMvcRestDocumentation.document("loginExist",
+                                ApiDocumentUtils.getRequestPreProcessor(),
+                                ApiDocumentUtils.getResponsePreProcessor(),
+                                PayloadDocumentation.requestFields(
+                                        List.of(
+                                                fieldWithPath("oauthAccessToken").type(JsonFieldType.STRING).description("OAuth2 Access Token"),
+                                                fieldWithPath("loginType").type(JsonFieldType.STRING).description("OAuth2 Type")
+                                        )
+
+                                ),
+                                HeaderDocumentation.responseHeaders(
+                                        headerWithName("userLoginType").description("회원 기존 로그인 타입")
+                                )
+                        ));
+    }
+
+    @Test
+    @DisplayName("로그인 TEST - User Inactive")
+    @WithMockUser
+    void loginInactive() throws Exception {
+        // Given
+        Token token = createToken();
+        LoginDto loginDto = StubUtils.createLoginDto();
+        Gson gson = new Gson();
+        String content = gson.toJson(loginDto);
+        User user = User.builder()
+                .userId(1L)
+                .userStatus(UserStatus.VERIFIED)
+                .email("test@test.com")
+                .loginType(LoginType.valueOf(loginDto.getLoginType()))
+                .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
+                .build();
+        given(httpClientService.generateLoginRequest(any(LoginDto.class))).willReturn(user.getEmail());
+        given(userService.createOrVerifiedUserByEmailAndLoginType(anyString(), anyString()))
+                .willThrow(new ServiceLogicException(ErrorCode.INACTIVE_USER));
+        given(userService.verifiedUserByEmail(anyString()))
+                .willReturn(user);
+        // When
+        RequestBuilder result = RestDocumentationRequestBuilders
+                .post("/api/auth/login")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName());
+        // Then
+        mockMvc.perform(result)
+                .andExpect(status().is4xxClientError())
+                .andDo(
+                        MockMvcRestDocumentation.document("loginInactive",
+                                ApiDocumentUtils.getRequestPreProcessor(),
+                                ApiDocumentUtils.getResponsePreProcessor(),
+                                PayloadDocumentation.requestFields(
+                                        List.of(
+                                                fieldWithPath("oauthAccessToken").type(JsonFieldType.STRING).description("OAuth2 Access Token"),
+                                                fieldWithPath("loginType").type(JsonFieldType.STRING).description("OAuth2 Type")
+                                        )
+
+                                ),
+                                HeaderDocumentation.responseHeaders(
+                                        headerWithName("userLoginType").description("회원 기존 로그인 타입")
+                                )
+                        ));
+    }
+
+    @Test
     @DisplayName("로그인 상태 확인 TEST - OK")
     @WithMockUser
     void verifyUserOK() throws Exception {
