@@ -26,6 +26,14 @@ public class UserController {
         return ResponseEntity.ok(ResponseDto.of(response));
     }
 
+    @PatchMapping
+    public ResponseEntity<?> reActivationUser(
+            @RequestBody String email
+    ) {
+        UserDto response = userService.reActivationUser(email);
+        return ResponseEntity.ok(ResponseDto.of(response));
+    }
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUser(
             @PathVariable Long userId
