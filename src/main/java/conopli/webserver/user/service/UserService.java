@@ -25,7 +25,9 @@ public class UserService {
     }
 
     public void deleteUser(Long userId) {
-
+        User findUser = userRepository.findUserById(userId);
+        findUser.setUserStatus(UserStatus.INACTIVE);
+        userRepository.saveUser(findUser);
     }
 
     public User verifiedUserById(Long userId) {
@@ -65,5 +67,14 @@ public class UserService {
                 throw e;
             }
         }
+    }
+
+    public UserDto reActivationUser(String email) {
+        User findUser = userRepository.findUserByEmail(email);
+        if (findUser.getUserStatus().equals(UserStatus.INACTIVE)) {
+            findUser.setUserStatus(UserStatus.VERIFIED);
+        }
+        User saveUser = userRepository.saveUser(findUser);
+        return UserDto.of(saveUser);
     }
 }
