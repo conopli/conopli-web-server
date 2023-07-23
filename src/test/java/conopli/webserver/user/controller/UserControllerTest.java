@@ -83,7 +83,6 @@ class UserControllerTest {
     @Test
     @DisplayName("회원 조회 TEST")
     @WithMockUser
-
     void searchUser() throws Exception {
         // Given
         Token token = createToken();
