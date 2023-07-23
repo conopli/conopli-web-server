@@ -156,7 +156,7 @@ class AuthControllerTest {
                 .userId(1L)
                 .userStatus(UserStatus.VERIFIED)
                 .email("test@test.com")
-                .loginType(LoginType.valueOf(loginDto.getLoginType()))
+                .loginType(LoginType.GOOGLE)
                 .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
                 .build();
         given(httpClientService.generateLoginRequest(any(LoginDto.class))).willReturn(user.getEmail());

@@ -132,7 +132,6 @@ class UserControllerTest {
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .patch("/api/users")
-                .header("Authorization", token.getAccessToken())
                 .content(contents)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -144,9 +143,6 @@ class UserControllerTest {
                         MockMvcRestDocumentation.document("reActivationUser",
                                 ApiDocumentUtils.getRequestPreProcessor(),
                                 ApiDocumentUtils.getResponsePreProcessor(),
-                                HeaderDocumentation.requestHeaders(
-                                        headerWithName("Authorization").description("AccessToken")
-                                ),
                                 PayloadDocumentation.requestFields(
                                         List.of(
                                                 fieldWithPath("email").type(JsonFieldType.STRING).description("회원 이메일")

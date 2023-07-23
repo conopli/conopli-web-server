@@ -89,7 +89,7 @@ asciidoctor.doFirst {
 task copyDocument(type: Copy) {
 	dependsOn asciidoctor
 	from file("build/docs/asciidoc")
-	into file("src/main/resources/templates/docs")
+	into file("src/main/resources/static/docs")
 }
 
 // build 의 의존작업 명시
@@ -99,7 +99,7 @@ build {
 
 // Querydsl 설정
 def generated='src/main/generated'
-def docs='src/main/resources/templates/docs'
+def docs='src/main/resources/static/docs'
 
 // querydsl QClass 파일 생성 위치를 지정
 tasks.withType(JavaCompile) {
