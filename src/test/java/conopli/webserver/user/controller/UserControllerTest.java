@@ -1,5 +1,6 @@
 package conopli.webserver.user.controller;
 
+import com.google.gson.Gson;
 import conopli.webserver.auth.controller.AuthController;
 import conopli.webserver.auth.token.JwtAuthorityUtils;
 import conopli.webserver.auth.token.JwtTokenizer;
@@ -43,6 +44,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -76,9 +78,12 @@ class UserControllerTest {
     @MockBean
     private RefreshRepository refreshRepository;
 
+    Gson gson = new Gson();
+
     @Test
     @DisplayName("회원 조회 TEST")
     @WithMockUser
+
     void searchUser() throws Exception {
         // Given
         Token token = createToken();
@@ -103,6 +108,51 @@ class UserControllerTest {
                                 ),
                                 HeaderDocumentation.requestHeaders(
                                         headerWithName("Authorization").description("AccessToken")
+                                ),
+                                PayloadDocumentation.responseFields(
+                                        List.of(
+                                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                                                fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                                fieldWithPath("data.email").type(JsonFieldType.STRING).description("회원 이메일"),
+                                                fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("회원 닉네임"),
+                                                fieldWithPath("data.userStatus").type(JsonFieldType.STRING).description("회원 상태"),
+                                                fieldWithPath("data.loginType").type(JsonFieldType.STRING).description("로그인 타입")
+                                        ))));
+    }
+
+    @Test
+    @DisplayName("탈퇴 회원 재활성화 TEST")
+    @WithMockUser
+    void reActivationUser() throws Exception {
+        // Given
+        Token token = createToken();
+        String email = "test@test.com";
+        Map<String, String> content = Map.of("email", email);
+        String contents = gson.toJson(content);
+        given(userService.reActivationUser(anyString())).willReturn(StubUtils.createUserDto());
+        // When
+        RequestBuilder result = RestDocumentationRequestBuilders
+                .patch("/api/users")
+                .header("Authorization", token.getAccessToken())
+                .content(contents)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName());
+        // Then
+        mockMvc.perform(result)
+                .andExpect(status().isOk())
+                .andDo(
+                        MockMvcRestDocumentation.document("reActivationUser",
+                                ApiDocumentUtils.getRequestPreProcessor(),
+                                ApiDocumentUtils.getResponsePreProcessor(),
+                                HeaderDocumentation.requestHeaders(
+                                        headerWithName("Authorization").description("AccessToken")
+                                ),
+                                PayloadDocumentation.requestFields(
+                                        List.of(
+                                                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 이메일")
+                                        )
+
                                 ),
                                 PayloadDocumentation.responseFields(
                                         List.of(
