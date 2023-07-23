@@ -69,8 +69,16 @@ NOTE: 특정 회원 정보 요청 API
 operation::searchUser[snippets='http-request,request-headers,path-parameters,http-response,response-body,response-fields']
 
 
+[[User-ReActivation]]
+=== 2.2 탈퇴 회원 재 활성화
+
+NOTE: 비활성 회원 재활성화 요청
+
+operation::reActivationUser[snippets='http-request,request-headers,request-fields,http-response,response-body,response-fields']
+
+
 [[User-Delete]]
-=== 2.2 회원 삭제
+=== 2.3 회원 삭제
 
 NOTE: 특정 회원 삭제(비활성화) 요청 API
 
