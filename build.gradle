@@ -85,15 +85,14 @@ asciidoctor.doFirst {
 	delete file('src/main/resources/static/docs')
 }
 
-// asccidoctor 작업 이후 생성된 HTML 파일을 static/docs 로 copy
 task copyDocument(type: Copy) {
 	dependsOn asciidoctor
-	from file("build/docs/asciidoc")
-	into file("src/main/resources/static/docs")
+	from file("${asciidoctor.outputDir}")
+	into file("build/resources/main/static/docs")
 }
 
 // build 의 의존작업 명시
-build {
+bootJar {
 	dependsOn copyDocument
 }
 
