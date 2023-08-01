@@ -2,6 +2,8 @@ package conopli.webserver.user.controller;
 
 import com.google.gson.Gson;
 import conopli.webserver.auth.controller.AuthController;
+import conopli.webserver.auth.dto.LoginDto;
+import conopli.webserver.auth.service.AuthService;
 import conopli.webserver.auth.token.JwtAuthorityUtils;
 import conopli.webserver.auth.token.JwtTokenizer;
 import conopli.webserver.auth.token.Token;
@@ -9,6 +11,9 @@ import conopli.webserver.auth.token.refresh.repository.RefreshRepository;
 import conopli.webserver.auth.token.refresh.service.RefreshService;
 import conopli.webserver.config.SecurityConfig;
 import conopli.webserver.constant.ErrorCode;
+import conopli.webserver.constant.LoginType;
+import conopli.webserver.constant.UserStatus;
+import conopli.webserver.service.HttpClientService;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
@@ -43,8 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -59,6 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("local")
 @Import({JwtAuthorityUtils.class,
         JwtTokenizer.class,
+        AuthService.class,
         WebHookService.class,
         SecurityConfig.class})
 class UserControllerTest {
@@ -69,8 +74,14 @@ class UserControllerTest {
     @Autowired
     private JwtTokenizer jwtTokenizer;
 
+    @Autowired
+    private AuthService authService;
+
     @MockBean
     private RefreshService refreshService;
+
+    @MockBean
+    private HttpClientService httpClientService;
 
     @MockBean
     private UserService userService;
@@ -113,7 +124,6 @@ class UserControllerTest {
                                                 fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
                                                 fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("회원 이메일"),
-                                                fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("회원 닉네임"),
                                                 fieldWithPath("data.userStatus").type(JsonFieldType.STRING).description("회원 상태"),
                                                 fieldWithPath("data.loginType").type(JsonFieldType.STRING).description("로그인 타입")
                                         ))));
@@ -124,15 +134,22 @@ class UserControllerTest {
     @WithMockUser
     void reActivationUser() throws Exception {
         // Given
-        Token token = createToken();
-        String email = "test@test.com";
-        Map<String, String> content = Map.of("email", email);
-        String contents = gson.toJson(content);
-        given(userService.reActivationUser(anyString())).willReturn(StubUtils.createUserDto());
+        LoginDto loginDto = StubUtils.createLoginDto();
+        String content = gson.toJson(loginDto);
+        User user = User.builder()
+                .userId(1L)
+                .userStatus(UserStatus.VERIFIED)
+                .email("test@test.com")
+                .loginType(LoginType.valueOf(loginDto.getLoginType()))
+                .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
+                .build();
+        given(httpClientService.generateLoginRequest(any(LoginDto.class))).willReturn(user.getEmail());
+        given(userService.verifiedUserByEmail(anyString())).willReturn(user);
+        given(userService.delegateSaveUser(any(User.class))).willReturn(user);
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
                 .patch("/api/users")
-                .content(contents)
+                .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8.displayName());
@@ -145,16 +162,21 @@ class UserControllerTest {
                                 ApiDocumentUtils.getResponsePreProcessor(),
                                 PayloadDocumentation.requestFields(
                                         List.of(
-                                                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 이메일")
+                                                fieldWithPath("oauthAccessToken").type(JsonFieldType.STRING).description("OAuth2 Access Token"),
+                                                fieldWithPath("loginType").type(JsonFieldType.STRING).description("OAuth2 Type")
                                         )
 
+                                ),
+                                HeaderDocumentation.responseHeaders(
+                                        headerWithName("Authorization").description("AccessToken"),
+                                        headerWithName("userId").description("회원 식별자"),
+                                        headerWithName("userStatus").description("UserStatus")
                                 ),
                                 PayloadDocumentation.responseFields(
                                         List.of(
                                                 fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
                                                 fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("회원 이메일"),
-                                                fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("회원 닉네임"),
                                                 fieldWithPath("data.userStatus").type(JsonFieldType.STRING).description("회원 상태"),
                                                 fieldWithPath("data.loginType").type(JsonFieldType.STRING).description("로그인 타입")
                                         ))));
