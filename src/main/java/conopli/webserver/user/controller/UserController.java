@@ -1,9 +1,12 @@
 package conopli.webserver.user.controller;
 
 
+import conopli.webserver.auth.dto.LoginDto;
+import conopli.webserver.auth.service.AuthService;
 import conopli.webserver.dto.ResponseDto;
 import conopli.webserver.user.dto.UserDto;
 import conopli.webserver.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,8 @@ public class UserController {
 
     private final UserService userService;
 
+    private final AuthService authService;
+
     @GetMapping("/{userId}")
     public ResponseEntity<?> searchUser(
             @PathVariable Long userId
@@ -28,10 +33,11 @@ public class UserController {
 
     @PatchMapping
     public ResponseEntity<?> reActivationUser(
-            @RequestBody String email
+            @RequestBody LoginDto loginDto,
+            HttpServletResponse response
     ) {
-        UserDto response = userService.reActivationUser(email);
-        return ResponseEntity.ok(ResponseDto.of(response));
+        UserDto userDto = authService.reActivationUser(loginDto, response);
+        return ResponseEntity.ok(ResponseDto.of(userDto));
     }
 
     @DeleteMapping("/{userId}")
