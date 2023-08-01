@@ -1,6 +1,7 @@
 package conopli.webserver.user.service;
 
 import conopli.webserver.auth.token.JwtAuthorityUtils;
+import conopli.webserver.auth.token.JwtTokenizer;
 import conopli.webserver.constant.ErrorCode;
 import conopli.webserver.constant.LoginType;
 import conopli.webserver.constant.UserStatus;
@@ -9,6 +10,7 @@ import conopli.webserver.playlist.entity.PlayList;
 import conopli.webserver.user.dto.UserDto;
 import conopli.webserver.user.entity.User;
 import conopli.webserver.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final JwtTokenizer jwtTokenizer;
 
     public UserDto searchUser(Long userId) {
         return UserDto.of(userRepository.findUserById(userId));
@@ -36,6 +40,9 @@ public class UserService {
 
     public User verifiedUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
+    }
+    public User delegateSaveUser(User user) {
+        return userRepository.saveUser(user);
     }
 
     public UserDto createOrVerifiedUserByEmailAndLoginType(String email, String loginType) {
@@ -69,12 +76,4 @@ public class UserService {
         }
     }
 
-    public UserDto reActivationUser(String email) {
-        User findUser = userRepository.findUserByEmail(email);
-        if (findUser.getUserStatus().equals(UserStatus.INACTIVE)) {
-            findUser.setUserStatus(UserStatus.VERIFIED);
-        }
-        User saveUser = userRepository.saveUser(findUser);
-        return UserDto.of(saveUser);
-    }
 }
