@@ -47,21 +47,21 @@ operation::verifyUserOk[snippets='http-request,request-headers,http-response']
 
 NOTE: 로그인 여부 확인시 AccessToken 만료 경우 응답
 
-operation::verifyUserException[snippets='http-request,request-headers,http-response,response-body,response-fields']
+operation::verifyUserException[snippets='http-request,request-headers,http-response,response-fields']
 
 [[Auth-Reissue-Token]]
 === 1.6 토큰 재발급 OK
 
 NOTE: AccessToken 재발급 요청 API
 
-operation::refreshOk[snippets='http-request,path-parameters,http-response,response-body,response-fields']
+operation::refreshOk[snippets='http-request,path-parameters,http-response,response-fields']
 
 [[Auth-Reissue-Token-Exception]]
 === 1.7 토큰 재발급 RefreshToken 만료
 
 NOTE: AccessToken 재발급시 RefreshToken 만료 경우 응답
 
-operation::refreshExpired[snippets='http-request,path-parameters,http-response,response-body,response-fields']
+operation::refreshExpired[snippets='http-request,path-parameters,http-response,response-fields']
 
 
 [[Auth-Logout]]
@@ -81,7 +81,7 @@ operation::verifyUserOk[snippets='http-request,request-headers,http-response']
 
 NOTE: 특정 회원 정보 요청 API
 
-operation::searchUser[snippets='http-request,request-headers,path-parameters,http-response,response-body,response-fields']
+operation::searchUser[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
 
 
 [[User-ReActivation]]
@@ -89,7 +89,7 @@ operation::searchUser[snippets='http-request,request-headers,path-parameters,htt
 
 NOTE: 비활성 회원 재활성화 요청
 
-operation::reActivationUser[snippets='http-request,request-headers,request-fields,http-response,response-body,response-fields']
+operation::reActivationUser[snippets='http-request,request-fields,http-response,response-headers,response-fields']
 
 
 [[User-Delete]]
@@ -138,7 +138,7 @@ operation::newMusic[snippets='http-request,http-response,response-fields']
 
 NOTE: 특정 회원의 플레이 리스트 요청 API
 
-operation::userPlaylist[snippets='http-request,request-headers,path-parameters,http-response,response-body,response-fields']
+operation::userPlaylist[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
 
 
 [[User-Playlist-Music-Get]]
@@ -146,7 +146,7 @@ operation::userPlaylist[snippets='http-request,request-headers,path-parameters,h
 
 NOTE: 특정 플레이 리스트의 저장된 음악 리스트 요청 API
 
-operation::userMusic[snippets='http-request,request-headers,path-parameters,http-response,response-body,response-fields']
+operation::userMusic[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
 
 
 [[User-Playlist-Post]]
@@ -154,14 +154,14 @@ operation::userMusic[snippets='http-request,request-headers,path-parameters,http
 
 NOTE: 특정 회원의 플레이 리스트 생성 요청 API
 
-operation::savePlaylist[snippets='http-request,request-headers,request-body,http-response,response-body,response-fields']
+operation::savePlaylist[snippets='http-request,request-headers,request-body,http-response,response-fields']
 
 [[User-Playlist-Music-Post]]
 === 4.4 플레이 리스트에 음악 저장
 
 NOTE: 특정 플레이 리스트의 음악 저장 요청 API
 
-operation::saveUserMusic[snippets='http-request,request-headers,request-body,request-fields,http-response,response-body,response-fields']
+operation::saveUserMusic[snippets='http-request,request-headers,request-body,request-fields,http-response,response-fields']
 
 
 [[User-Playlist-Patch]]
@@ -169,14 +169,14 @@ operation::saveUserMusic[snippets='http-request,request-headers,request-body,req
 
 NOTE: 특정 회원의 플레이 리스트 수정 요청 API
 
-operation::modifyPlayList[snippets='http-request,request-headers,path-parameters,request-body,request-fields,http-response,response-body,response-fields']
+operation::modifyPlayList[snippets='http-request,request-headers,path-parameters,request-body,request-fields,http-response,response-fields']
 
 [[User-Playlist-Music-Patch]]
 === 4.6 플레이 리스트의 저장 음악 수정
 
 NOTE: 특정 플레이 리스트의 저장된 음악 수정 요청 API
 
-operation::modifyUserMusic[snippets='http-request,request-headers,request-body,request-fields,http-response,response-body,response-fields']
+operation::modifyUserMusic[snippets='http-request,request-headers,request-body,request-fields,http-response,response-fields']
 
 
 [[User-Playlist-Duplication-Patch]]
