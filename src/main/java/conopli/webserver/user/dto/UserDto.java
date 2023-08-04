@@ -14,8 +14,6 @@ public class UserDto {
 
     private String email;
 
-    private String nickName;
-
     private String userStatus;
 
     private String loginType;

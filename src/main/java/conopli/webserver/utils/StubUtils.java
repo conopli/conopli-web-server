@@ -123,7 +123,6 @@ public class StubUtils {
         return UserDto.builder()
                 .userId(1L)
                 .email("test@test.com")
-                .nickName("nickName")
                 .userStatus("VERIFIED")
                 .loginType("GOOGLE")
                 .build();
