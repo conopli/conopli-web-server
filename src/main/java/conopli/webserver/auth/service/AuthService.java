@@ -3,6 +3,7 @@ package conopli.webserver.auth.service;
 import conopli.webserver.auth.dto.LoginDto;
 import conopli.webserver.auth.token.JwtTokenizer;
 import conopli.webserver.constant.ErrorCode;
+import conopli.webserver.constant.UserStatus;
 import conopli.webserver.exception.ServiceLogicException;
 import conopli.webserver.service.HttpClientService;
 import conopli.webserver.user.dto.UserDto;
@@ -49,6 +50,19 @@ public class AuthService {
             }
             throw e;
         }
+    }
+
+    public UserDto reActivationUser(LoginDto loginDto, HttpServletResponse response) {
+        String email = httpClientService.generateLoginRequest(loginDto);
+        User findUser = userService.verifiedUserByEmail(email);
+        if (findUser.getUserStatus().equals(UserStatus.INACTIVE)) {
+            findUser.setUserStatus(UserStatus.VERIFIED);
+        }
+        jwtTokenizer.delegateToken(email,response);
+        response.setHeader("userId", String.valueOf(findUser.getUserId()));
+        response.setHeader("userStatus", findUser.getUserStatus().name());
+        User saveUser = userService.delegateSaveUser(findUser);
+        return UserDto.of(saveUser);
     }
 
     public void verifyUser(

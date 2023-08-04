@@ -83,6 +83,7 @@ public class ExceptionAdvice {
     public ErrorResponse exceptionHandler(Exception e) {
         WebHookDto dto = getServerErrorWebHookDto(e);
         webHookService.callEvent(dto);
+        e.printStackTrace();
         return ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
@@ -93,6 +94,7 @@ public class ExceptionAdvice {
         if (e.getErrorCode().getStatus() == 500) {
             WebHookDto dto = getServerErrorWebHookDto(e.getErrorCode());
             webHookService.callEvent(dto);
+            e.printStackTrace();
         }
         return new ResponseEntity<>(
                 ErrorResponse.of(e.getErrorCode()),

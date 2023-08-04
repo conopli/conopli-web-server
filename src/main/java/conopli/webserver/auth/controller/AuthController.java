@@ -32,8 +32,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private final JwtTokenizer jwtTokenizer;
-
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @RequestBody LoginDto loginDto,
