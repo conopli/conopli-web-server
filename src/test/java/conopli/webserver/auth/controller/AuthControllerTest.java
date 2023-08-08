@@ -187,8 +187,15 @@ class AuthControllerTest {
                                 ),
                                 HeaderDocumentation.responseHeaders(
                                         headerWithName("userLoginType").description("회원 기존 로그인 타입")
-                                )
-                        ));
+                                ),
+                                PayloadDocumentation.responseFields(
+                                        List.of(
+                                                fieldWithPath("status").type(JsonFieldType.NUMBER).description("ErrorCode"),
+                                                fieldWithPath("message").type(JsonFieldType.STRING).description("ErrorMessage"),
+                                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("Web Server ErrorCode"),
+                                                fieldWithPath("fieldErrors").type(JsonFieldType.STRING).description("fieldErrors").optional(),
+                                                fieldWithPath("violationErrors").type(JsonFieldType.STRING).description("violationErrors").optional()
+                                        ))));
     }
 
     @Test
@@ -235,8 +242,15 @@ class AuthControllerTest {
                                 ),
                                 HeaderDocumentation.responseHeaders(
                                         headerWithName("userLoginType").description("회원 기존 로그인 타입")
-                                )
-                        ));
+                                ),
+                                PayloadDocumentation.responseFields(
+                                        List.of(
+                                                fieldWithPath("status").type(JsonFieldType.NUMBER).description("ErrorCode"),
+                                                fieldWithPath("message").type(JsonFieldType.STRING).description("ErrorMessage"),
+                                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("Web Server ErrorCode"),
+                                                fieldWithPath("fieldErrors").type(JsonFieldType.STRING).description("fieldErrors").optional(),
+                                                fieldWithPath("violationErrors").type(JsonFieldType.STRING).description("violationErrors").optional()
+                                        ))));
     }
 
     @Test
@@ -294,6 +308,7 @@ class AuthControllerTest {
                                         List.of(
                                                 fieldWithPath("status").type(JsonFieldType.NUMBER).description("ErrorCode"),
                                                 fieldWithPath("message").type(JsonFieldType.STRING).description("ErrorMessage"),
+                                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("Web Server ErrorCode"),
                                                 fieldWithPath("fieldErrors").type(JsonFieldType.STRING).description("fieldErrors").optional(),
                                                 fieldWithPath("violationErrors").type(JsonFieldType.STRING).description("violationErrors").optional()
                                         ))));
@@ -376,6 +391,7 @@ class AuthControllerTest {
                                         List.of(
                                                 fieldWithPath("status").type(JsonFieldType.NUMBER).description("ErrorCode"),
                                                 fieldWithPath("message").type(JsonFieldType.STRING).description("ErrorMessage"),
+                                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("Web Server ErrorCode"),
                                                 fieldWithPath("fieldErrors").type(JsonFieldType.STRING).description("fieldErrors").optional(),
                                                 fieldWithPath("violationErrors").type(JsonFieldType.STRING).description("violationErrors").optional()
                                         ))));

@@ -127,7 +127,7 @@ operation::loginOk[snippets='http-request,request-fields,request-body,http-respo
 
 NOTE: 로그인 실패 400
 
-operation::loginExist[snippets='http-request,request-fields,request-body,http-response,response-headers']
+operation::loginExist[snippets='http-request,request-fields,request-body,http-response,response-headers,response-fields']
 
 
 [[Auth-Login-Post-Inactive]]
@@ -135,7 +135,7 @@ operation::loginExist[snippets='http-request,request-fields,request-body,http-re
 
 NOTE: 로그인 실패 403
 
-operation::loginInactive[snippets='http-request,request-fields,request-body,http-response,response-headers']
+operation::loginInactive[snippets='http-request,request-fields,request-body,http-response,response-headers,response-fields']
 
 
 [[Auth-Verify-Login]]
