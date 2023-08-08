@@ -7,6 +7,110 @@ CONO PLI
 :toclevels: 2
 :sectlinks:
 
+
+[[overview]]
+== Overview
+
+[[overview-host]]
+=== Host
+
+|===
+| 환경 | Host
+
+| Develop
+| `localhost`
+
+| Production
+| https://service.suyoung-server.site
+|===
+
+
+[[overview-error-codes]]
+=== Error codes
+
+|===
+| 상태 코드 | 에러 코드 | 설명
+
+| `400`
+| `14001`
+| BAD REQUEST
+
+| `400`
+| `14003`
+| Already Exist User Email
+
+| `400`
+| `14004`
+| Already Exist User Music
+
+| `400`
+| `14005`
+| Argument Mismatch Bad Request
+
+| `403`
+| `14006`
+| ACCESS DENIED
+
+| `403`
+| `14007`
+| Inactive User
+
+| `404`
+| `14008`
+| NOT FOUND
+
+| `404`
+| `14009`
+| Not Found Request Url
+
+| `404`
+| `14010`
+| Not Found User
+
+| `404`
+| `14011`
+| Not Found User Music
+
+| `404`
+| `14012`
+| Not Found Playlist
+
+| `403`
+| `14013`
+| EXPIRED ACCESS TOKEN
+
+| `404`
+| `14014`
+| TOKEN_NOT_NULL
+
+| `401`
+| `14015`
+| EXPIRED REFRESH TOKEN
+
+| `400`
+| `14016`
+| Music Domain Server Request I/O Error(Bad Request)
+
+
+| `400`
+| `14017`
+| OAuth Server Request I/O Error(Bad Request)
+
+| `500`
+| `15001`
+| Internal Server Error
+
+| `500`
+| `15002`
+| Data Access Error
+
+| `501`
+| `15003`
+| NOT IMPLEMENTED
+
+
+|===
+
 [[CONO-PLI-Auth]]
 == 1. Auth Controller
 
