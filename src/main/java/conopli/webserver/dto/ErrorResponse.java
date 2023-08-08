@@ -14,9 +14,15 @@ import java.util.stream.Collectors;
 public class ErrorResponse {
     private int status;
     private String message;
+    private int code;
     private List<FieldError> fieldErrors;
     private List<ConstraintViolationError> violationErrors;
 
+    private ErrorResponse(int status, String message, int code) {
+        this.status = status;
+        this.message = message;
+        this.code = code;
+    }
     private ErrorResponse(int status, String message) {
         this.status = status;
         this.message = message;
@@ -36,7 +42,7 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse of(ErrorCode errorCode) {
-        return new ErrorResponse(errorCode.getStatus(), errorCode.getMessage());
+        return new ErrorResponse(errorCode.getStatus(), errorCode.getMessage(), errorCode.getCode());
     }
 
     public static ErrorResponse of(HttpStatus status) {
