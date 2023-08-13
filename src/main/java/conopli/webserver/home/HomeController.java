@@ -13,6 +13,6 @@ public class HomeController {
 
     @GetMapping("/redirect")
     public ModelAndView getRedirect() {
-        return new ModelAndView("empty");
+        return new ModelAndView("loading");
     }
 }
