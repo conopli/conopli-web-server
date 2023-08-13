@@ -15,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashSet;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -67,6 +69,7 @@ public class UserService {
                         .email(email)
                         .loginType(LoginType.valueOf(loginType.toUpperCase()))
                         .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
+                        .playList(new LinkedHashSet<>())
                         .build();
                 user.addPlayList(playList);
                 return UserDto.of(userRepository.saveUser(user));
