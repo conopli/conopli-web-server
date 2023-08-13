@@ -34,7 +34,8 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests()
                 .requestMatchers(
-                        new AntPathRequestMatcher("/api/auth/verify-user")).hasRole("USER")
+                        new AntPathRequestMatcher("/api/auth/verify-user")
+                ).hasRole("USER")
                 .requestMatchers(
                         new AntPathRequestMatcher("/**")).permitAll()
                 .and()
