@@ -108,6 +108,7 @@ public class HttpClientService {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             if (loginType.equals("KAKAO")) {
                 log.info("Kakao Login Request");
+                log.info("Kakao Login Token = {}", dto.getOauthAccessToken());
                 requestUrl = UrlCreateUtil.createKakaoLoginRequestUrl();
                 HttpGet httpGet = new HttpGet(requestUrl);
                 httpGet.setHeader("Content-type", "application/json");
@@ -115,6 +116,7 @@ public class HttpClientService {
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
             } else if (loginType.equals("NAVER")) {
                 log.info("Naver Login Request");
+                log.info("Naver Login Token = {}", dto.getOauthAccessToken());
                 requestUrl = UrlCreateUtil.createNaverLoginRequestUrl();
                 HttpGet httpGet = new HttpGet(requestUrl);
                 httpGet.setHeader("Content-type", "application/json");
@@ -122,6 +124,7 @@ public class HttpClientService {
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
             } else {
                 log.info("Google Login Request");
+                log.info("Google Login Token = {}", dto.getOauthAccessToken());
                 requestUrl = UrlCreateUtil.createGoogleLoginRequestUrl(dto.getOauthAccessToken());
                 HttpGet httpGet = new HttpGet(requestUrl);
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
