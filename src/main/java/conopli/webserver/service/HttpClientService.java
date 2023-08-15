@@ -107,18 +107,21 @@ public class HttpClientService {
         String requestUrl;
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             if (loginType.equals("KAKAO")) {
+                log.info("Kakao Login Request");
                 requestUrl = UrlCreateUtil.createKakaoLoginRequestUrl();
                 HttpGet httpGet = new HttpGet(requestUrl);
                 httpGet.setHeader("Content-type", "application/json");
                 httpGet.setHeader("Authorization","Bearer "+dto.getOauthAccessToken());
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
             } else if (loginType.equals("NAVER")) {
+                log.info("Naver Login Request");
                 requestUrl = UrlCreateUtil.createNaverLoginRequestUrl();
                 HttpGet httpGet = new HttpGet(requestUrl);
                 httpGet.setHeader("Content-type", "application/json");
                 httpGet.setHeader("Authorization","Bearer "+dto.getOauthAccessToken());
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
             } else {
+                log.info("Google Login Request");
                 requestUrl = UrlCreateUtil.createGoogleLoginRequestUrl(dto.getOauthAccessToken());
                 HttpGet httpGet = new HttpGet(requestUrl);
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
@@ -136,14 +139,18 @@ public class HttpClientService {
                 if (loginType.equals("KAKAO")) {
                     JsonElement kakaoElement = JsonParser.parseString(res);
                     JsonElement kakaoAccount = kakaoElement.getAsJsonObject().get("kakao_account");
-                    return kakaoAccount.getAsJsonObject().get("email").getAsString();
+                    String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
+                    return email;
                 } else if (loginType.equals("NAVER")) {
                     JsonElement naverElement = JsonParser.parseString(res);
                     JsonElement naverAccount = naverElement.getAsJsonObject().get("response");
-                    return naverAccount.getAsJsonObject().get("email").getAsString();
+                    String email = naverAccount.getAsJsonObject().get("email").getAsString();
+                    return email;
                 } else {
                     JsonElement googleElement = JsonParser.parseString(res);
-                    return googleElement.getAsJsonObject().get("email").getAsString();
+                    String email = googleElement.getAsJsonObject().get("email").getAsString();
+                    log.info("Google Email Account = {}", email);
+                    return email;
                 }
 
             } else {
