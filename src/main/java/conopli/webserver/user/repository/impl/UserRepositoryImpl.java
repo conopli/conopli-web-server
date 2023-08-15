@@ -32,4 +32,9 @@ public class UserRepositoryImpl implements UserRepository {
         return repository.findById(userId)
                 .orElseThrow(() -> new ServiceLogicException(ErrorCode.NOT_FOUND_USER));
     }
+
+    @Override
+    public void deleteUser(User user) {
+        repository.delete(user);
+    }
 }

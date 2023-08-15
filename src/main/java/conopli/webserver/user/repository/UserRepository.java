@@ -11,4 +11,6 @@ public interface UserRepository {
 
     User findUserById(Long userId);
 
+    void deleteUser(User user);
+
 }
