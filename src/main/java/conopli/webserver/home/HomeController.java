@@ -15,4 +15,9 @@ public class HomeController {
     public ModelAndView getRedirect() {
         return new ModelAndView("loading");
     }
+
+    @GetMapping("/policy")
+    public ModelAndView getPolicy() {
+        return new ModelAndView("policy");
+    }
 }
