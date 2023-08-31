@@ -9,6 +9,7 @@ import conopli.webserver.config.SecurityConfig;
 import conopli.webserver.search.dto.PopularRequestDto;
 import conopli.webserver.search.dto.SearchDto;
 import conopli.webserver.service.HttpClientService;
+import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
 import conopli.webserver.utils.StubUtils;
 import conopli.webserver.webhook.WebHookService;
@@ -58,6 +59,9 @@ class SearchControllerTest {
 
     @Autowired
     private HttpClientService httpClientService;
+
+    @MockBean
+    private UserService userService;
 
     @MockBean
     private RefreshService refreshService;

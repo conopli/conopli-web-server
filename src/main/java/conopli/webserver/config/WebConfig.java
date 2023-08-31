@@ -24,7 +24,8 @@ public class WebConfig implements WebMvcConfigurer {
             "/api/users",
             "/api/search",
             "/api/search/popular",
-            "/api/search/new-music"
+            "/api/search/new-music",
+            "/api/auth/reissue-token/**"
     );
     private final List<String> DEFAULT_EXCLUDE = List.of(
             "/",
