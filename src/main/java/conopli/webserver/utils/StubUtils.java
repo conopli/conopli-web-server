@@ -1,6 +1,7 @@
 package conopli.webserver.utils;
 
 import conopli.webserver.auth.dto.LoginDto;
+import conopli.webserver.auth.token.JwtAuthorityUtils;
 import conopli.webserver.constant.LoginType;
 import conopli.webserver.constant.UserStatus;
 import conopli.webserver.music.dto.UserMusicDto;
@@ -135,6 +136,7 @@ public class StubUtils {
                 .email("test@test.com")
                 .userStatus(UserStatus.VERIFIED)
                 .loginType(LoginType.KAKAO)
+                .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
                 .build();
         get.setCreateAt(LocalDateTime.now());
         get.setUpdateAt(LocalDateTime.now());
