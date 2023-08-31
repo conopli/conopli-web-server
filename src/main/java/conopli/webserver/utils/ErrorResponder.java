@@ -16,7 +16,13 @@ public class ErrorResponder {
             Object status) throws IOException {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         if (status instanceof HttpStatus) {
-            errorResponse = ErrorResponse.of((HttpStatus) status);
+            if (status.equals(HttpStatus.UNAUTHORIZED)) {
+                errorResponse = ErrorResponse.of(ErrorCode.UNAUTHORIZED);
+            } else if (status.equals(HttpStatus.FORBIDDEN)) {
+                errorResponse = ErrorResponse.of(ErrorCode.ACCESS_DENIED);
+            } else {
+                errorResponse = ErrorResponse.of((HttpStatus) status);
+            }
         } else if (status instanceof ErrorCode) {
             errorResponse = ErrorResponse.of((ErrorCode) status);
         }
