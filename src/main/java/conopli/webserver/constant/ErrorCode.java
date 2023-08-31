@@ -18,6 +18,7 @@ public enum ErrorCode {
     EXPIRED_ACCESS_TOKEN(403, "EXPIRED ACCESS TOKEN", 14013),
     TOKEN_NOT_NULL(404, "TOKEN_NOT_NULL", 14014),
     EXPIRED_REFRESH_TOKEN(401,"EXPIRED REFRESH TOKEN", 14015),
+    UNAUTHORIZED(401, "Unauthorized(Required Access Token)" , 14016),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error", 15001),
     DOMAIN_SERVER_HTTP_REQUEST_IO_ERROR(400, "Music Domain Server Request I/O Error(Bad Request)", 14016),
     HTTP_REQUEST_IO_ERROR(400, "OAuth Server Request I/O Error(Bad Request)" , 14017),

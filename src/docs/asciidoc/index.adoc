@@ -87,6 +87,10 @@ CONO PLI
 | `14015`
 | EXPIRED REFRESH TOKEN
 
+| `401`
+| `14016`
+| Unauthorized(Required Access Token)
+
 | `400`
 | `14016`
 | Music Domain Server Request I/O Error(Bad Request)
@@ -173,7 +177,7 @@ operation::refreshExpired[snippets='http-request,path-parameters,http-response,r
 
 NOTE: 로그아웃 요청 API
 
-operation::verifyUserOk[snippets='http-request,request-headers,http-response']
+operation::logoutOk[snippets='http-request,request-headers,http-response']
 
 
 [[CONO-PLI-User]]
