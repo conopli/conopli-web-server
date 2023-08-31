@@ -34,23 +34,6 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests()
                 .requestMatchers(
-                        new AntPathRequestMatcher("/api/auth/verify-user"),
-                        new AntPathRequestMatcher("/api/auth/reissue-token/**"),
-                        new AntPathRequestMatcher("/api/auth/logout"),
-                        new AntPathRequestMatcher("/api/users/**","GET"),
-                        new AntPathRequestMatcher("/api/users/**","DELETE"),
-                        new AntPathRequestMatcher("/api/user-music/playlist/**","GET"),
-                        new AntPathRequestMatcher("/api/user-music/**","GET"),
-                        new AntPathRequestMatcher("/api/user-music/playlist","POST"),
-                        new AntPathRequestMatcher("/api/user-music","POST"),
-                        new AntPathRequestMatcher("/api/user-music/playlist/**","PATCH"),
-                        new AntPathRequestMatcher("/api/user-music/contents","PATCH"),
-                        new AntPathRequestMatcher("/api/user-music/duplication/**","PATCH"),
-                        new AntPathRequestMatcher("/api/user-music/initial/**","PATCH"),
-                        new AntPathRequestMatcher("/api/user-music/playlist/**","DELETE"),
-                        new AntPathRequestMatcher("/api/user-music","PATCH")
-                ).hasRole("USER")
-                .requestMatchers(
                         new AntPathRequestMatcher("/**")).permitAll()
                 .and()
                 .csrf().disable()
@@ -58,8 +41,6 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .authenticationEntryPoint(new UserAuthenticationEntryPoint())
                 .accessDeniedHandler(new UserAccessDeniedHandler())
-                .and()
-                .apply(new CustomFilterConfig())
                 .and()
                 .httpBasic().disable()
                 .headers()
