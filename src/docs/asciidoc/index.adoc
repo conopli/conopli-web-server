@@ -87,9 +87,6 @@ CONO PLI
 | `14015`
 | EXPIRED REFRESH TOKEN
 
-| `401`
-| `14016`
-| Unauthorized(Required Access Token)
 
 | `400`
 | `14016`
@@ -99,6 +96,10 @@ CONO PLI
 | `400`
 | `14017`
 | OAuth Server Request I/O Error(Bad Request)
+
+| `401`
+| `14018`
+| Unauthorized(Required Access Token)
 
 | `500`
 | `15001`
