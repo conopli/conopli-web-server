@@ -41,7 +41,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             Map<String, Object> claims = verifyJws(request);
             setAuthenticationToContext(claims);
         } catch (SignatureException se) {
-            request.setAttribute("exception", se);
+            request.setAttribute(
+                    "exception",
+                    new ServiceLogicException(ErrorCode.ACCESS_DENIED));
         } catch (ExpiredJwtException ee) {
             request.setAttribute(
                     "exception",
