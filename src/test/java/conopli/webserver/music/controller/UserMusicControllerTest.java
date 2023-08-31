@@ -409,6 +409,7 @@ class UserMusicControllerTest {
 
     @Test
     @DisplayName("특정 플레이 리스트 음악 중복 제거 TEST")
+    @WithMockUser
     void duplicationUserMusic() throws Exception {
         // Given
         Token token = createToken();
@@ -439,6 +440,7 @@ class UserMusicControllerTest {
 
     @Test
     @DisplayName("특정 플레이 리스트 OrderNumber 초기화 TEST")
+    @WithMockUser
     void resetOrderNum() throws Exception {
         // Given
         Token token = createToken();

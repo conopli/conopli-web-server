@@ -104,13 +104,7 @@ class AuthControllerTest {
         LoginDto loginDto = StubUtils.createLoginDto();
         Gson gson = new Gson();
         String content = gson.toJson(loginDto);
-        User user = User.builder()
-                .userId(1L)
-                .userStatus(UserStatus.VERIFIED)
-                .email("test@test.com")
-                .loginType(LoginType.valueOf(loginDto.getLoginType()))
-                .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
-                .build();
+        User user = StubUtils.createUser();
         given(httpClientService.generateLoginRequest(any(LoginDto.class))).willReturn(user.getEmail());
         given(userService.createOrVerifiedUserByEmailAndLoginType(anyString(), anyString()))
                 .willReturn(UserDto.of(user));
@@ -148,17 +142,10 @@ class AuthControllerTest {
     @WithMockUser
     void loginExist() throws Exception {
         // Given
-        Token token = createToken();
         LoginDto loginDto = StubUtils.createLoginDto();
         Gson gson = new Gson();
         String content = gson.toJson(loginDto);
-        User user = User.builder()
-                .userId(1L)
-                .userStatus(UserStatus.VERIFIED)
-                .email("test@test.com")
-                .loginType(LoginType.GOOGLE)
-                .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
-                .build();
+        User user = StubUtils.createUser();
         given(httpClientService.generateLoginRequest(any(LoginDto.class))).willReturn(user.getEmail());
         given(userService.createOrVerifiedUserByEmailAndLoginType(anyString(), anyString()))
                 .willThrow(new ServiceLogicException(ErrorCode.EXIST_USER));
@@ -207,13 +194,7 @@ class AuthControllerTest {
         LoginDto loginDto = StubUtils.createLoginDto();
         Gson gson = new Gson();
         String content = gson.toJson(loginDto);
-        User user = User.builder()
-                .userId(1L)
-                .userStatus(UserStatus.VERIFIED)
-                .email("test@test.com")
-                .loginType(LoginType.valueOf(loginDto.getLoginType()))
-                .roles(JwtAuthorityUtils.USER_ROLES_STRING_CALL)
-                .build();
+        User user = StubUtils.createUser();
         given(httpClientService.generateLoginRequest(any(LoginDto.class))).willReturn(user.getEmail());
         given(userService.createOrVerifiedUserByEmailAndLoginType(anyString(), anyString()))
                 .willThrow(new ServiceLogicException(ErrorCode.INACTIVE_USER));
