@@ -53,7 +53,7 @@ public class LoggerFilter extends OncePerRequestFilter {
         );
         String responseBody = new String(res.getContentAsByteArray());
         if (responseBody.length() > 50) {
-            responseBody = responseBody.substring(0, 5);
+            responseBody = responseBody.substring(0, 50);
         }
         log.info("<<<<<< [Response] URI : {} , Method : {} Header : {} ,  body : {}",URI, method, responseHeaders, responseBody);
 
