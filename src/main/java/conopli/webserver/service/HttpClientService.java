@@ -66,6 +66,9 @@ public class HttpClientService {
 
     public HttpClientDto generatePopularMusicRequest(PopularRequestDto dto) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            //Todo 달 변경으로 인해 정상 파싱 되지 않음 임시 조치
+            dto.setSmm(String.valueOf(Integer.parseInt(dto.getSmm())-1));
+            dto.setEmm(String.valueOf(Integer.parseInt(dto.getEmm())-1));
             HttpGet httpGet = new HttpGet(UrlCreateUtil.createPopularRequestUrl(dto));
             httpGet.setHeader("Content-type", "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
