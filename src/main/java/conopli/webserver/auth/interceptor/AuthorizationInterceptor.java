@@ -44,6 +44,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         String jws = accessToken.replace("Bearer ", "");
         try {
             tokenizer.verifyAccessToken(jws);
+        } catch (ServiceLogicException ee) {
+            throw ee;
         } catch (Exception e) {
             throw new ServiceLogicException(ErrorCode.ACCESS_DENIED);
         }

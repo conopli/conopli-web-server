@@ -15,6 +15,7 @@ import conopli.webserver.music.service.UserMusicService;
 import conopli.webserver.playlist.dto.PlayListModifyRequestDto;
 import conopli.webserver.playlist.dto.PlayListRequestDto;
 import conopli.webserver.user.entity.User;
+import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
 import conopli.webserver.utils.StubUtils;
 import conopli.webserver.webhook.WebHookService;
@@ -74,6 +75,9 @@ class UserMusicControllerTest {
 
     @Autowired
     private JwtTokenizer jwtTokenizer;
+
+    @MockBean
+    private UserService userService;
 
     @MockBean
     private RefreshService refreshService;
