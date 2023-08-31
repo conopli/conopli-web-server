@@ -28,16 +28,5 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory("localhost", port);
     }
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration();
-//        clusterConfiguration.clusterNode(host, port);
-//        LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
-//                .clientOptions(ClientOptions.builder()
-//                        .socketOptions(SocketOptions.builder()
-//                                .connectTimeout(Duration.ofMillis(60)).build())
-//                        .build())
-//                .commandTimeout(Duration.ofSeconds(60)).build();
-//        return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
-//    }
+
 }
