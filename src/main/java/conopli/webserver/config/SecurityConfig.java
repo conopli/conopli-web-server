@@ -42,6 +42,8 @@ public class SecurityConfig {
                 .authenticationEntryPoint(new UserAuthenticationEntryPoint())
                 .accessDeniedHandler(new UserAccessDeniedHandler())
                 .and()
+                .apply(new CustomFilterConfig())
+                .and()
                 .httpBasic().disable()
                 .headers()
                 .addHeaderWriter(new XFrameOptionsHeaderWriter(
@@ -60,7 +62,7 @@ public class SecurityConfig {
         public void configure(HttpSecurity builder) throws Exception {
 
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
-            builder.addFilterBefore(jwtVerificationFilter, SecurityContextHolderFilter.class);
+            builder.addFilterAfter(jwtVerificationFilter, SecurityContextHolderFilter.class);
         }
     }
 }
