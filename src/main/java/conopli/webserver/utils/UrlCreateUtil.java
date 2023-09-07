@@ -59,15 +59,11 @@ public class UrlCreateUtil {
     }
 
     public static String createKakaoMapRequestUrl(MapSearchDto dto) {
-        dto.setLat("37.550643");
-        dto.setLng("126.921049");
         StringBuffer sb = new StringBuffer();
         sb.append(BaseUrl.KAKAO_MAP.getUrl());
         sb.append("?y=");
-//        sb.append("37.550643");
         sb.append(dto.getLat());
         sb.append("&x=");
-//        sb.append("126.921049");
         sb.append(dto.getLng());
         sb.append("&radius=");
         sb.append("2000");
