@@ -62,11 +62,13 @@ public class UrlCreateUtil {
         StringBuffer sb = new StringBuffer();
         sb.append(BaseUrl.KAKAO_MAP.getUrl());
         sb.append("?y=");
-        sb.append(dto.getLat());
+        sb.append("37.550643");
+//        sb.append(dto.getLat());
         sb.append("&x=");
-        sb.append(dto.getLng());
+        sb.append("126.921049");
+//        sb.append(dto.getLng());
         sb.append("&radius=");
-        sb.append("1000");
+        sb.append("2000");
         sb.append("&query=");
         sb.append(dto.getSearchType());
         sb.append("&size=");

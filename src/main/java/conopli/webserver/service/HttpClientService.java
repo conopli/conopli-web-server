@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -44,7 +45,7 @@ public class HttpClientService {
         SearchDto searchDto = verifySearchDto(dto);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchRequestUrl(searchDto));
-            httpGet.setHeader("Content-type", "application/json");
+            httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientPageDto execute = (HttpClientPageDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
@@ -56,7 +57,7 @@ public class HttpClientService {
     public HttpClientDto generateSearchMusicByNumRequest(String musicNum) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchByNumRequestUrl(musicNum));
-            httpGet.setHeader("Content-type", "application/json");
+            httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
@@ -71,7 +72,7 @@ public class HttpClientService {
             dto.setSmm(String.format("%02d", Integer.parseInt(dto.getSmm())-1));
             dto.setEmm( String.format("%02d", Integer.parseInt(dto.getEmm())-1));
             HttpGet httpGet = new HttpGet(UrlCreateUtil.createPopularRequestUrl(dto));
-            httpGet.setHeader("Content-type", "application/json");
+            httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
@@ -83,7 +84,7 @@ public class HttpClientService {
     public HttpClientDto generateNewMusicRequest() {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(UrlCreateUtil.createNewMusicRequestUrl());
-            httpGet.setHeader("Content-type", "application/json");
+            httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
@@ -95,8 +96,8 @@ public class HttpClientService {
     public HttpClientKakaoMapDto generateKakaoMapRequest(MapSearchDto dto) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(UrlCreateUtil.createKakaoMapRequestUrl(dto));
-            httpGet.setHeader("Content-type", "application/json");
-            httpGet.setHeader("Authorization",kakaoAccessKey);
+            httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+            httpGet.setHeader(HttpHeaders.AUTHORIZATION,kakaoAccessKey);
             log.info("Executing request = {} ", httpGet.getRequestLine());
             log.info("Authorization = {} ", kakaoAccessKey);
             HttpClientKakaoMapDto execute = (HttpClientKakaoMapDto) httpclient.execute(httpGet, getResponseHandler());
@@ -115,15 +116,15 @@ public class HttpClientService {
                 log.info("Kakao Login Token = {}", dto.getOauthAccessToken());
                 requestUrl = UrlCreateUtil.createKakaoLoginRequestUrl();
                 HttpGet httpGet = new HttpGet(requestUrl);
-                httpGet.setHeader("Content-type", "application/json");
-                httpGet.setHeader("Authorization","Bearer "+dto.getOauthAccessToken());
+                httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+                httpGet.setHeader(HttpHeaders.AUTHORIZATION,"Bearer "+dto.getOauthAccessToken());
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
             } else if (loginType.equals("NAVER")) {
                 log.info("Naver Login Request");
                 log.info("Naver Login Token = {}", dto.getOauthAccessToken());
                 requestUrl = UrlCreateUtil.createNaverLoginRequestUrl();
                 HttpGet httpGet = new HttpGet(requestUrl);
-                httpGet.setHeader("Content-type", "application/json");
+                httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
                 httpGet.setHeader("Authorization","Bearer "+dto.getOauthAccessToken());
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
             } else {
