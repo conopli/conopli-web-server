@@ -199,6 +199,7 @@ public class HttpClientService {
                 HttpEntity responseBody = response.getEntity();
                 //Todo : 예외가 발생 이유 확인 - response를 두번 읽어들이면 예외 발생
                 String res = EntityUtils.toString(responseBody);
+                System.out.println(res);
                 if (res.contains("pageInfo")) {
                     return mapper.readValue(
                             res,
@@ -218,6 +219,9 @@ public class HttpClientService {
 
             } else {
                 //Todo : Status Code 활용하여 예외처리
+                HttpEntity responseBody = response.getEntity();
+                String res = EntityUtils.toString(responseBody);
+                log.error("Error Response = {}", res);
                 throw new ClientProtocolException("Unexpected response status: " + status);
             }
         };
