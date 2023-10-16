@@ -117,6 +117,8 @@ public class StubUtils {
                 .youtubeUrl("YoutubeURL")
                 .nation("국가")
                 .orderNum(orderNum)
+                .kyNum("72727")
+                .mrSound(false)
                 .build();
     }
 

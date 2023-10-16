@@ -34,6 +34,10 @@ public class UserMusicDto {
 
     private int orderNum;
 
+    private String kyNum;
+
+    private boolean mrSound;
+
     private UserMusicDto (UserMusic music) {
         this.userMusicId = String.valueOf(music.getUserMusicId());
         this.musicId = String.valueOf(music.getMusicId());
@@ -46,6 +50,8 @@ public class UserMusicDto {
         this.youtubeUrl = music.getYoutubeUrl();
         this.nation = music.getNation();
         this.orderNum = music.getOrderNum();
+        this.kyNum = music.getKyNum();
+        this.mrSound = music.isMrSound();
     }
 
     public static UserMusicDto of(UserMusic music) {

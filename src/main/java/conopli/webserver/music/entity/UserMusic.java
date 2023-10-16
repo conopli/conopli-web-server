@@ -48,6 +48,14 @@ public class UserMusic extends Auditable {
     @Setter
     private int orderNum;
 
+    @Column(nullable = false)
+    @Setter
+    private String kyNum;
+
+    @Column(nullable = false)
+    @Setter
+    private boolean mrSound;
+
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private PlayList playList;
@@ -67,6 +75,8 @@ public class UserMusic extends Auditable {
         this.composer = el.getAsJsonObject().get("composer").getAsString();
         this.youtubeUrl = el.getAsJsonObject().get("youtubeUrl").getAsString();
         this.nation = el.getAsJsonObject().get("nation").getAsString();
+        this.kyNum = el.getAsJsonObject().get("kyNum").getAsString();
+        this.mrSound = el.getAsJsonObject().get("mrSound").getAsBoolean();
     }
 
     public static UserMusic of(HttpClientDto dto) {
