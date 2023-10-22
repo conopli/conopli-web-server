@@ -5,6 +5,7 @@ import conopli.webserver.auth.token.JwtAuthorityUtils;
 import conopli.webserver.auth.token.JwtTokenizer;
 import conopli.webserver.auth.token.refresh.repository.RefreshRepository;
 import conopli.webserver.auth.token.refresh.service.RefreshService;
+import conopli.webserver.config.MusicDomainConfig;
 import conopli.webserver.config.SecurityConfig;
 import conopli.webserver.search.dto.PopularRequestDto;
 import conopli.webserver.search.dto.SearchDto;
@@ -12,6 +13,7 @@ import conopli.webserver.service.HttpClientService;
 import conopli.webserver.user.service.UserService;
 import conopli.webserver.utils.ApiDocumentUtils;
 import conopli.webserver.utils.StubUtils;
+import conopli.webserver.utils.UrlCreateUtil;
 import conopli.webserver.webhook.WebHookService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,6 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({JwtAuthorityUtils.class,
         JwtTokenizer.class,
         HttpClientService.class,
+        UrlCreateUtil.class,
+        MusicDomainConfig.class,
         WebHookService.class,
         SecurityConfig.class})
 class SearchControllerTest {
@@ -59,6 +63,7 @@ class SearchControllerTest {
 
     @Autowired
     private HttpClientService httpClientService;
+
 
     @MockBean
     private UserService userService;
