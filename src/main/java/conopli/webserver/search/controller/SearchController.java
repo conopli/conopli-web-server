@@ -47,9 +47,12 @@ public class SearchController {
     }
 
     @GetMapping("/new-music")
-    public ResponseEntity<?> newMusic() {
+    public ResponseEntity<?> newMusic(
+            @RequestParam String yy,
+            @RequestParam String mm
+    ) {
         // Todo : 신곡 검색
-        HttpClientDto response = httpClientService.generateNewMusicRequest();
+        HttpClientDto response = httpClientService.generateNewMusicRequest(yy, mm);
         return ResponseEntity.ok(response);
     }
 

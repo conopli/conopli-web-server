@@ -81,9 +81,9 @@ public class HttpClientService {
         }
     }
 
-    public HttpClientDto generateNewMusicRequest() {
+    public HttpClientDto generateNewMusicRequest(String yy, String mm) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(urlCreateUtil.createNewMusicRequestUrl());
+            HttpGet httpGet = new HttpGet(urlCreateUtil.createNewMusicRequestUrl(yy, mm));
             httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());

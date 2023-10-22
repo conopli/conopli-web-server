@@ -56,10 +56,12 @@ public class UrlCreateUtil {
         return sb.toString();
     }
 
-    public String createNewMusicRequestUrl() {
+    public String createNewMusicRequestUrl(String yy, String mm) {
         StringBuffer sb = new StringBuffer();
         sb.append(musicDomain.getBaseUrl());
         sb.append("/new-music");
+        sb.append("?yy=").append(yy);
+        sb.append("&mm=").append(mm);
         return sb.toString();
     }
 

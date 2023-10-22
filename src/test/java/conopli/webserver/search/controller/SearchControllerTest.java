@@ -64,7 +64,6 @@ class SearchControllerTest {
     @Autowired
     private HttpClientService httpClientService;
 
-
     @MockBean
     private UserService userService;
 
@@ -166,7 +165,7 @@ class SearchControllerTest {
         // Given
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
-                .get("/api/search/new-music")
+                .get("/api/search/new-music?yy=2023&mm=09")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8.displayName());
@@ -177,6 +176,10 @@ class SearchControllerTest {
                         MockMvcRestDocumentation.document("newMusic",
                                 ApiDocumentUtils.getRequestPreProcessor(),
                                 ApiDocumentUtils.getResponsePreProcessor(),
+                                RequestDocumentation.queryParameters(
+                                        parameterWithName("yy").description("검색 연도(ex. 2023)"),
+                                        parameterWithName("mm").description("검색 월(ex. 04)")
+                                ),
                                 PayloadDocumentation.responseFields(
                                         List.of(
                                                 fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
@@ -187,7 +190,6 @@ class SearchControllerTest {
                                                 fieldWithPath("data[].composer").type(JsonFieldType.STRING).description("작곡"),
                                                 fieldWithPath("data[].youtubeUrl").type(JsonFieldType.STRING).description("YouTube URL"),
                                                 fieldWithPath("data[].nation").type(JsonFieldType.STRING).description("국가")
-
                                         ))));
     }
 

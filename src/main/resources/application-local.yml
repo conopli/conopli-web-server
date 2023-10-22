@@ -40,4 +40,4 @@ logging.level:
     springframework:
       web.servlet: debug
 music:
-  baseUrl: http://music.suyoung-server.site/api/music
+  baseUrl: http://devmusic.suyoung-server.site/api/music
