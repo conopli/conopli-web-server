@@ -1,17 +1,22 @@
 package conopli.webserver.utils;
 
+import conopli.webserver.config.MusicDomainConfig;
 import conopli.webserver.constant.BaseUrl;
 import conopli.webserver.map.dto.MapSearchDto;
 import conopli.webserver.search.dto.PopularRequestDto;
 import conopli.webserver.search.dto.SearchDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UrlCreateUtil {
 
-    public static String createSearchRequestUrl(SearchDto dto) {
+    private final MusicDomainConfig musicDomain;
+
+    public String createSearchRequestUrl(SearchDto dto) {
         StringBuffer sb = new StringBuffer();
-        sb.append(BaseUrl.BASE_URL.getUrl());
+        sb.append(musicDomain.getBaseUrl());
         sb.append("/search");
         sb.append("?searchType=");
         sb.append(dto.getSearchType());
@@ -25,17 +30,17 @@ public class UrlCreateUtil {
         return sb.toString();
     }
 
-    public static String createSearchByNumRequestUrl(String musicNum) {
+    public String createSearchByNumRequestUrl(String musicNum) {
         StringBuffer sb = new StringBuffer();
-        sb.append(BaseUrl.BASE_URL.getUrl());
+        sb.append(musicDomain.getBaseUrl());
         sb.append("/search/");
         sb.append(musicNum);
         return sb.toString();
     }
 
-    public static String createPopularRequestUrl(PopularRequestDto dto) {
+    public String createPopularRequestUrl(PopularRequestDto dto) {
         StringBuffer sb = new StringBuffer();
-        sb.append(BaseUrl.BASE_URL.getUrl());
+        sb.append(musicDomain.getBaseUrl());
         sb.append("/popular");
         sb.append("?searchType=");
         sb.append(dto.getSearchType());
@@ -51,14 +56,14 @@ public class UrlCreateUtil {
         return sb.toString();
     }
 
-    public static String createNewMusicRequestUrl() {
+    public String createNewMusicRequestUrl() {
         StringBuffer sb = new StringBuffer();
-        sb.append(BaseUrl.BASE_URL.getUrl());
+        sb.append(musicDomain.getBaseUrl());
         sb.append("/new-music");
         return sb.toString();
     }
 
-    public static String createKakaoMapRequestUrl(MapSearchDto dto) {
+    public String createKakaoMapRequestUrl(MapSearchDto dto) {
         StringBuffer sb = new StringBuffer();
         sb.append(BaseUrl.KAKAO_MAP.getUrl());
         sb.append("?y=");
@@ -76,18 +81,18 @@ public class UrlCreateUtil {
     }
 
 
-    public static String createGoogleLoginRequestUrl(String token) {
+    public String createGoogleLoginRequestUrl(String token) {
         StringBuffer sb = new StringBuffer();
         sb.append(BaseUrl.GOOGLE_LOGIN.getUrl());
         sb.append(token);
         return sb.toString();
     }
 
-    public static String createKakaoLoginRequestUrl() {
+    public String createKakaoLoginRequestUrl() {
         return BaseUrl.KAKAO_LOGIN.getUrl();
     }
 
-    public static String createNaverLoginRequestUrl() {
+    public String createNaverLoginRequestUrl() {
         return BaseUrl.NAVER_LOGIN.getUrl();
     }
 
