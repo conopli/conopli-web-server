@@ -40,3 +40,5 @@ logging.level:
             org.hibernate.type.descriptor.sql.BasicBinder: trace
     springframework:
       web.servlet: debug
+music:
+  baseUrl: http://localhost:8080/api/music
