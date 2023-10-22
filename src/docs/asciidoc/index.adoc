@@ -234,7 +234,7 @@ operation::popularMusic[snippets='http-request,query-parameters,http-response,re
 
 NOTE: 신곡 리스트 조회 요청 API
 
-operation::newMusic[snippets='http-request,http-response,response-fields']
+operation::newMusic[snippets='http-request,query-parameters,http-response,response-fields']
 
 
 
