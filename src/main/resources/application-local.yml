@@ -39,3 +39,5 @@ logging.level:
             org.hibernate.type.descriptor.sql.BasicBinder: trace
     springframework:
       web.servlet: debug
+music:
+  baseUrl: http://music.suyoung-server.site/api/music

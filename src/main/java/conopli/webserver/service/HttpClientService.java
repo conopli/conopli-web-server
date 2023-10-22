@@ -13,7 +13,6 @@ import conopli.webserver.map.dto.MapSearchDto;
 import conopli.webserver.search.dto.PopularRequestDto;
 import conopli.webserver.search.dto.SearchDto;
 import conopli.webserver.utils.UrlCreateUtil;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -41,10 +39,12 @@ public class HttpClientService {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
+    private final UrlCreateUtil urlCreateUtil;
+
     public HttpClientPageDto generateSearchMusicRequest(SearchDto dto) {
         SearchDto searchDto = verifySearchDto(dto);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchRequestUrl(searchDto));
+            HttpGet httpGet = new HttpGet(urlCreateUtil.createSearchRequestUrl(searchDto));
             httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientPageDto execute = (HttpClientPageDto) httpclient.execute(httpGet, getResponseHandler());
@@ -56,7 +56,7 @@ public class HttpClientService {
 
     public HttpClientDto generateSearchMusicByNumRequest(String musicNum) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(UrlCreateUtil.createSearchByNumRequestUrl(musicNum));
+            HttpGet httpGet = new HttpGet(urlCreateUtil.createSearchByNumRequestUrl(musicNum));
             httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
@@ -71,7 +71,7 @@ public class HttpClientService {
             //Todo 달 변경으로 인해 정상 파싱 되지 않음 임시 조치
             dto.setSmm(String.format("%02d", Integer.parseInt(dto.getSmm())-1));
             dto.setEmm( String.format("%02d", Integer.parseInt(dto.getEmm())-1));
-            HttpGet httpGet = new HttpGet(UrlCreateUtil.createPopularRequestUrl(dto));
+            HttpGet httpGet = new HttpGet(urlCreateUtil.createPopularRequestUrl(dto));
             httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
@@ -83,7 +83,7 @@ public class HttpClientService {
 
     public HttpClientDto generateNewMusicRequest() {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(UrlCreateUtil.createNewMusicRequestUrl());
+            HttpGet httpGet = new HttpGet(urlCreateUtil.createNewMusicRequestUrl());
             httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
             HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
@@ -95,7 +95,7 @@ public class HttpClientService {
 
     public HttpClientKakaoMapDto generateKakaoMapRequest(MapSearchDto dto) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(UrlCreateUtil.createKakaoMapRequestUrl(dto));
+            HttpGet httpGet = new HttpGet(urlCreateUtil.createKakaoMapRequestUrl(dto));
             httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             httpGet.setHeader(HttpHeaders.AUTHORIZATION,kakaoAccessKey);
             log.info("Executing request = {} ", httpGet.getRequestLine());
@@ -114,7 +114,7 @@ public class HttpClientService {
             if (loginType.equals("KAKAO")) {
                 log.info("Kakao Login Request");
                 log.info("Kakao Login Token = {}", dto.getOauthAccessToken());
-                requestUrl = UrlCreateUtil.createKakaoLoginRequestUrl();
+                requestUrl = urlCreateUtil.createKakaoLoginRequestUrl();
                 HttpGet httpGet = new HttpGet(requestUrl);
                 httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
                 httpGet.setHeader(HttpHeaders.AUTHORIZATION,"Bearer "+dto.getOauthAccessToken());
@@ -122,7 +122,7 @@ public class HttpClientService {
             } else if (loginType.equals("NAVER")) {
                 log.info("Naver Login Request");
                 log.info("Naver Login Token = {}", dto.getOauthAccessToken());
-                requestUrl = UrlCreateUtil.createNaverLoginRequestUrl();
+                requestUrl = urlCreateUtil.createNaverLoginRequestUrl();
                 HttpGet httpGet = new HttpGet(requestUrl);
                 httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
                 httpGet.setHeader("Authorization","Bearer "+dto.getOauthAccessToken());
@@ -130,7 +130,7 @@ public class HttpClientService {
             } else {
                 log.info("Google Login Request");
                 log.info("Google Login Token = {}", dto.getOauthAccessToken());
-                requestUrl = UrlCreateUtil.createGoogleLoginRequestUrl(dto.getOauthAccessToken());
+                requestUrl = urlCreateUtil.createGoogleLoginRequestUrl(dto.getOauthAccessToken());
                 HttpGet httpGet = new HttpGet(requestUrl);
                 return (String) httpclient.execute(httpGet, getLoginHandler(loginType));
             }

@@ -1,6 +1,5 @@
-
 server:
-  port: 8080
+  port: 8090
 spring:
   datasource:
     url: ${MAIN_DB_URL}
@@ -25,7 +24,7 @@ spring:
   data:
     redis:
       host: localhost
-      port: 16379
+      port: 6379
 logging.level:
   org.hibernate.SQL: debug
   com:
@@ -41,4 +40,4 @@ logging.level:
     springframework:
       web.servlet: debug
 music:
-  baseUrl: http://localhost:8080/api/music
+  baseUrl: http://localhost:8091/api/music
