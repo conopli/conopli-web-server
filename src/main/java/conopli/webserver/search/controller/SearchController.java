@@ -42,17 +42,18 @@ public class SearchController {
             @ModelAttribute PopularRequestDto requestDto
     ) {
         // Todo : 인기곡 검색
-        HttpClientDto response = httpClientService.generatePopularMusicRequest(requestDto);
+        HttpClientPageDto response = httpClientService.generatePopularMusicRequest(requestDto);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/new-music")
     public ResponseEntity<?> newMusic(
             @RequestParam String yy,
-            @RequestParam String mm
+            @RequestParam String mm,
+            @RequestParam int page
     ) {
         // Todo : 신곡 검색
-        HttpClientDto response = httpClientService.generateNewMusicRequest(yy, mm);
+        HttpClientPageDto response = httpClientService.generateNewMusicRequest(yy, mm, page);
         return ResponseEntity.ok(response);
     }
 
