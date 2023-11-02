@@ -66,27 +66,26 @@ public class HttpClientService {
         }
     }
 
-    public HttpClientDto generatePopularMusicRequest(PopularRequestDto dto) {
+    public HttpClientPageDto generatePopularMusicRequest(PopularRequestDto dto) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             //Todo 달 변경으로 인해 정상 파싱 되지 않음 임시 조치
-            dto.setSmm(String.format("%02d", Integer.parseInt(dto.getSmm())-1));
-            dto.setEmm( String.format("%02d", Integer.parseInt(dto.getEmm())-1));
+            dto.setMm(String.format("%02d", Integer.parseInt(dto.getMm())-1));
             HttpGet httpGet = new HttpGet(urlCreateUtil.createPopularRequestUrl(dto));
             httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
-            HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
+            HttpClientPageDto execute = (HttpClientPageDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
         } catch (IOException e) {
             throw new ServiceLogicException(ErrorCode.DOMAIN_SERVER_HTTP_REQUEST_IO_ERROR);
         }
     }
 
-    public HttpClientDto generateNewMusicRequest(String yy, String mm) {
+    public HttpClientPageDto generateNewMusicRequest(String yy, String mm, int page) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(urlCreateUtil.createNewMusicRequestUrl(yy, mm));
+            HttpGet httpGet = new HttpGet(urlCreateUtil.createNewMusicRequestUrl(yy, mm, page));
             httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
             log.info("Executing request = {} ", httpGet.getRequestLine());
-            HttpClientDto execute = (HttpClientDto) httpclient.execute(httpGet, getResponseHandler());
+            HttpClientPageDto execute = (HttpClientPageDto) httpclient.execute(httpGet, getResponseHandler());
             return execute;
         } catch (IOException e) {
             throw new ServiceLogicException(ErrorCode.DOMAIN_SERVER_HTTP_REQUEST_IO_ERROR);
@@ -199,7 +198,6 @@ public class HttpClientService {
                 HttpEntity responseBody = response.getEntity();
                 //Todo : 예외가 발생 이유 확인 - response를 두번 읽어들이면 예외 발생
                 String res = EntityUtils.toString(responseBody);
-                System.out.println(res);
                 if (res.contains("pageInfo")) {
                     return mapper.readValue(
                             res,
