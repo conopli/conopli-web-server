@@ -44,24 +44,23 @@ public class UrlCreateUtil {
         sb.append("/popular");
         sb.append("?searchType=");
         sb.append(dto.getSearchType());
-        sb.append("&syy=");
-        sb.append(dto.getSyy());
-        sb.append("&smm=");
-        sb.append(dto.getSmm());
-        sb.append("&eyy=");
-        sb.append(dto.getEyy());
-        sb.append("&emm=");
-        sb.append(dto.getEmm());
+        sb.append("&yy=");
+        sb.append(dto.getYy());
+        sb.append("&mm=");
+        sb.append(dto.getMm());
+        sb.append("&page=");
+        sb.append(dto.getPage());
 
         return sb.toString();
     }
 
-    public String createNewMusicRequestUrl(String yy, String mm) {
+    public String createNewMusicRequestUrl(String yy, String mm, int page) {
         StringBuffer sb = new StringBuffer();
         sb.append(musicDomain.getBaseUrl());
         sb.append("/new-music");
         sb.append("?yy=").append(yy);
         sb.append("&mm=").append(mm);
+        sb.append("&page=").append(page);
         return sb.toString();
     }
 

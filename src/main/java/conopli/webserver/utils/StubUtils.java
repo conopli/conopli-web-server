@@ -21,10 +21,9 @@ public class StubUtils {
     public static PopularRequestDto createPopularRequestDto() {
         return PopularRequestDto.builder()
                 .searchType("1")
-                .syy("2023")
-                .smm("04")
-                .eyy("2023")
-                .emm("04")
+                .yy("2023")
+                .mm("04")
+                .page(0)
                 .build();
     }
 
