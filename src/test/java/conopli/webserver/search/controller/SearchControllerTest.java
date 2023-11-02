@@ -141,7 +141,7 @@ class SearchControllerTest {
                                 ApiDocumentUtils.getRequestPreProcessor(),
                                 ApiDocumentUtils.getResponsePreProcessor(),
                                 RequestDocumentation.queryParameters(
-                                        parameterWithName("searchType").description("검색 타입 (1 = 제목, 2 = 가수 , 4 = 작사가 , 8 = 작곡가, 16 = 곡번호)"),
+                                        parameterWithName("searchType").description("검색 타입 (1 = 가요, 2 = POP,  3 = J-POP)"),
                                         parameterWithName("yy").description("연도(ex. 2023)"),
                                         parameterWithName("mm").description("월(ex. 04)"),
                                         parameterWithName("page").description("요청 페이지 정보")
