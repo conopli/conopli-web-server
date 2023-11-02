@@ -12,8 +12,6 @@ public class SearchDto {
 
     String searchKeyWord;
 
-    String searchNation;
-
     int page;
 
 }

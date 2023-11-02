@@ -169,11 +169,9 @@ public class HttpClientService {
 
     private SearchDto verifySearchDto(SearchDto dto) {
         List<Integer> searchType = List.of(1, 2, 4, 8, 16);
-        List<String> searchNation = List.of("KOR", "ENG", "JPN");
 
         boolean searchTypeBol = searchType.contains(dto.getSearchType());
-        boolean searchNationBol = searchNation.contains(dto.getSearchNation());
-        if (!searchTypeBol || !searchNationBol) {
+        if (!searchTypeBol) {
             throw new ServiceLogicException(ErrorCode.ARGUMENT_MISMATCH_BAD_REQUEST);
         }
         String searchKeyWord = dto.getSearchKeyWord();
