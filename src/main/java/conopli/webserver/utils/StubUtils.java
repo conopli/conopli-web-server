@@ -42,7 +42,6 @@ public class StubUtils {
                 .searchType(1)
                 .page(0)
                 .searchKeyWord("아리랑")
-                .searchNation("KOR")
                 .build();
     }
     public static LoginDto createLoginDto() {

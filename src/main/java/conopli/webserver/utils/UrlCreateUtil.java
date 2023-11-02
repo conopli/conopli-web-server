@@ -22,8 +22,6 @@ public class UrlCreateUtil {
         sb.append(dto.getSearchType());
         sb.append("&searchKeyWord=");
         sb.append(dto.getSearchKeyWord());
-        sb.append("&searchNation=");
-        sb.append(dto.getSearchNation());
         sb.append("&page=");
         sb.append(dto.getPage());
 

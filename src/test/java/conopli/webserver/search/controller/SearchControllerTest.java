@@ -82,7 +82,7 @@ class SearchControllerTest {
         SearchDto searchDto = StubUtils.createSearchDto();
         // When
         RequestBuilder result = RestDocumentationRequestBuilders
-                .get("/api/search?searchType="+searchDto.getSearchType()+"&searchKeyWord="+searchDto.getSearchKeyWord()+"&searchNation="+searchDto.getSearchNation()+"&page="+searchDto.getPage())
+                .get("/api/search?searchType="+searchDto.getSearchType()+"&searchKeyWord="+searchDto.getSearchKeyWord()+"&page="+searchDto.getPage())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8.displayName());
@@ -96,8 +96,7 @@ class SearchControllerTest {
                                 RequestDocumentation.queryParameters(
                                         parameterWithName("searchType").description("검색 타입 (1 = 제목, 2 = 가수 , 4 = 작사가 , 8 = 작곡가, 16 = 곡번호)"),
                                         parameterWithName("page").description("요청 페이지 정보"),
-                                        parameterWithName("searchKeyWord").description("검색 키워드"),
-                                        parameterWithName("searchNation").description("검색 국가")
+                                        parameterWithName("searchKeyWord").description("검색 키워드")
                                 ),
                                 PayloadDocumentation.responseFields(
                                         List.of(
