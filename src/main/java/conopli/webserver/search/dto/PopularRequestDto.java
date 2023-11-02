@@ -12,11 +12,9 @@ public class PopularRequestDto {
     // 1 = 가요 2 = POP 3 = J-POP
     String searchType;
 
-    String syy;
-    String smm;
+    String yy;
+    String mm;
 
-    String eyy;
-    String emm;
-
+    int page;
 
 }
