@@ -158,7 +158,7 @@ class SearchControllerTest {
                                                 fieldWithPath("data[].nation").type(JsonFieldType.STRING).description("국가"),
                                                 fieldWithPath("data[].kyNum").type(JsonFieldType.STRING).description("KY 곡번호").optional(),
                                                 fieldWithPath("data[].mrSound").type(JsonFieldType.BOOLEAN).description("MR 음원 여부"),
-                                                fieldWithPath("data[].ranking").type(JsonFieldType.STRING).description("순위"),
+                                                fieldWithPath("data[].ranking").type(JsonFieldType.NUMBER).description("순위"),
                                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
                                                 fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("현재 페이지"),
                                                 fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("페이지 요소 갯수"),
