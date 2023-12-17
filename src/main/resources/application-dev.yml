@@ -26,18 +26,14 @@ spring:
       host: localhost
       port: 16378
 logging.level:
-  org.hibernate.SQL: debug
-  com:
-    amazonaws:
-      util:
-        EC2MetadataUtils: error
+  org.hibernate.SQL: info
   org:
     hibernate:
       type:
         descriptor:
           sql:
-            org.hibernate.type.descriptor.sql.BasicBinder: trace
+            org.hibernate.type.descriptor.sql.BasicBinder : info
     springframework:
-      web.servlet: debug
+      web.servlet : info
 music:
   baseUrl: http://localhost:8091/api/music
