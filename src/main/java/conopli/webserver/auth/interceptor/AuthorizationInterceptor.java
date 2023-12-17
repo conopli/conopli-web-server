@@ -14,6 +14,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -23,8 +24,13 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
     private final JwtTokenizer tokenizer;
 
+    List<String> exclude = List.of(
+            "/version"
+    );
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String requestURI = request.getRequestURI();
         log.info("Authorization Interception URL : {}", request.getRequestURL());
 
         // web, chrome 의 경우 GET, POST, OPTION 통과
@@ -35,10 +41,13 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         if (handler instanceof ResourceHttpRequestHandler) {
             return true;
         }
+        if (exclude.contains(requestURI)) {
+            return true;
+        }
 
         // TODO Header 검증 로직
         String accessToken = request.getHeader("Authorization");
-        if (accessToken == null) {
+        if (accessToken == null ) {
             throw new ServiceLogicException(ErrorCode.TOKEN_NOT_NULL);
         }
         String jws = accessToken.replace("Bearer ", "");
